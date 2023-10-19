@@ -1,23 +1,25 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import typing
 import os
+from game import Game
+import json
 
 hostName = "0.0.0.0"
 serverPort = 8080
 
-def read_file(filename):
+def read_file(filename: str) -> str:
 	f = open(filename, "r")
 	t = f.read()
 	f.close()
 	return t
 
-def bin_read_file(filename):
+def bin_read_file(filename: str) -> bytes:
 	f = open(filename, "rb")
 	t = f.read()
 	f.close()
 	return t
 
-def write_file(filename, content):
+def write_file(filename: str, content: str):
 	f = open(filename, "w")
 	f.write(content)
 	f.close()
@@ -27,8 +29,9 @@ class HttpResponse(typing.TypedDict):
 	headers: dict[str, str]
 	content: str | bytes
 
+game: Game = Game()
+
 def get(path: str) -> HttpResponse:
-	print(path)
 	if os.path.isfile("public_files" + path):
 		return {
 			"status": 200,
@@ -48,6 +51,16 @@ def get(path: str) -> HttpResponse:
 				"Content-Type": "text/html"
 			},
 			"content": read_file("public_files" + path + "index.html")
+		}
+	elif path == "/status":
+		return {
+			"status": 200,
+			"headers": {
+				"Content-Type": "application/json"
+			},
+			"content": json.dumps({
+				"status": game.status
+			})
 		}
 	else: # 404 page
 		return {
