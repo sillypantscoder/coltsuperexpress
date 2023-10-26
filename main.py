@@ -1,30 +1,27 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import typing
 import os
-from game import Game
 import json
+from game import Game
 
 hostName = "0.0.0.0"
 serverPort = 8080
 
-def read_file(filename: str) -> str:
-	f = open(filename, "r")
-	t = f.read()
-	f.close()
-	return t
-
-def bin_read_file(filename: str) -> bytes:
+def read_file(filename: str) -> bytes:
+	"""Read a file and return the contents."""
 	f = open(filename, "rb")
 	t = f.read()
 	f.close()
 	return t
 
-def write_file(filename: str, content: str):
-	f = open(filename, "w")
+def write_file(filename: str, content: bytes):
+	"""Write data to a file."""
+	f = open(filename, "wb")
 	f.write(content)
 	f.close()
 
 class HttpResponse(typing.TypedDict):
+	"""A dict containing a """
 	status: int
 	headers: dict[str, str]
 	content: str | bytes
@@ -42,7 +39,7 @@ def get(path: str) -> HttpResponse:
 					"css": "text/css"
 				}[path.split(".")[-1]]
 			},
-			"content": bin_read_file("public_files" + path)
+			"content": read_file("public_files" + path)
 		}
 	elif os.path.isdir("public_files" + path):
 		return {
@@ -59,7 +56,8 @@ def get(path: str) -> HttpResponse:
 				"Content-Type": "application/json"
 			},
 			"content": json.dumps({
-				"status": game.status
+				"status": game.status,
+				"players": ""
 			})
 		}
 	else: # 404 page
@@ -68,24 +66,28 @@ def get(path: str) -> HttpResponse:
 			"headers": {
 				"Content-Type": "text/html"
 			},
-			"content": f""
+			"content": ""
 		}
 
 def post(path: str, body: bytes) -> HttpResponse:
-	if False:
+	if path == "/echo":
 		bodydata = body.decode("UTF-8").split("\n")
+		return {
+			"status": 200,
+			"headers": {},
+			"content": ""
+		}
 	else:
 		return {
 			"status": 404,
 			"headers": {
 				"Content-Type": "text/html"
 			},
-			"content": f""
+			"content": ""
 		}
 
 class MyServer(BaseHTTPRequestHandler):
 	def do_GET(self):
-		global running
 		res = get(self.path)
 		self.send_response(res["status"])
 		for h in res["headers"]:
@@ -103,13 +105,13 @@ class MyServer(BaseHTTPRequestHandler):
 		c = res["content"]
 		if isinstance(c, str): c = c.encode("utf-8")
 		self.wfile.write(c)
-	def log_message(self, format: str, *args) -> None:
-		return;
+	def log_message(self, _format: str, *args) -> None:
+		return
 		if 400 <= int(args[1]) < 500:
 			# Errored request!
-			print(u"\u001b[31m", end="")
+			print("\u001b[31m", end="")
 		print(args[0].split(" ")[0], "request to", args[0].split(" ")[1], "(status code:", args[1] + ")")
-		print(u"\u001b[0m", end="")
+		print("\u001b[0m", end="")
 		# don't output requests
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ function post(url, body) {
 
 function init() {
 	request("/status").then((v) => {
-		/** @type {{ status: number }} */
+		/** @type {{ status: string }} */
 		var d = JSON.parse(v)
 		return d;
 	}).then((v) => {
