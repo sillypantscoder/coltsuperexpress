@@ -45,9 +45,7 @@ class TurnCard(Card):
 			else:
 				self.figure.direction = "left"
 
-class UpOrDownCard(Card):
-	# anyone got a better name for this?
-	# :/
+class ChangeLevelCard(Card):
 	def __init__(self, figure: Figure):
 		super().__init__(figure)
 	def execute(self):
@@ -79,6 +77,7 @@ class Game:
 		self.train: list[list[Figure]] = []
 	def addPlayer(self, player: Player):
 		self.players.append(player)
+		self.initTrain()
 	def __str__(self):
 		player_s = ''.join([f'\n |   {self.players.index(p)} - {p.name}' for p in self.players])
 		def combineHz(s1: str, s2: str):
@@ -175,6 +174,17 @@ class Game:
 				new_car.append(figure)
 			else:
 				new_car.insert(0, figure)
+	def toDict(self):
+		return {
+			"status": self.status,
+			"players": [p.name for p in self.players],
+			"train": [[{
+				"player": f.player.name if f.player != None else None,
+				"direction": f.direction,
+				"height": f.height,
+				"stunned": f.stunned
+			} for f in car] for car in self.train]
+		}
 
 if __name__ == "__main__":
 	# some testing
@@ -183,4 +193,6 @@ if __name__ == "__main__":
 	game.addPlayer(Player("someone else"))
 	game.addPlayer(Player("a third person"))
 	game.initTrain()
+	print(game)
+	MoveForwardsCard(game.players[0].figure, game).execute()
 	print(game)

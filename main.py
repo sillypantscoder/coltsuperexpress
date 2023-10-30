@@ -55,10 +55,7 @@ def get(path: str) -> HttpResponse:
 			"headers": {
 				"Content-Type": "application/json"
 			},
-			"content": json.dumps({
-				"status": game.status,
-				"players": ""
-			})
+			"content": json.dumps(game.toDict())
 		}
 	else: # 404 page
 		return {
@@ -70,7 +67,7 @@ def get(path: str) -> HttpResponse:
 		}
 
 def post(path: str, body: bytes) -> HttpResponse:
-	if path == "/echo":
+	if path == "/":
 		bodydata = body.decode("UTF-8").split("\n")
 		return {
 			"status": 200,
@@ -107,18 +104,18 @@ class MyServer(BaseHTTPRequestHandler):
 		self.wfile.write(c)
 	def log_message(self, _format: str, *args) -> None:
 		return
-		if 400 <= int(args[1]) < 500:
-			# Errored request!
-			print("\u001b[31m", end="")
-		print(args[0].split(" ")[0], "request to", args[0].split(" ")[1], "(status code:", args[1] + ")")
-		print("\u001b[0m", end="")
-		# don't output requests
+		# if 400 <= int(args[1]) < 500:
+		# 	# Errored request!
+		# 	print("\u001b[31m", end="")
+		# print(args[0].split(" ")[0], "request to", args[0].split(" ")[1], "(status code:", args[1] + ")")
+		# print("\u001b[0m", end="")
+		# # don't output requests
 
 if __name__ == "__main__":
 	running = True
 	webServer = HTTPServer((hostName, serverPort), MyServer)
 	webServer.timeout = 1
-	print("Server started http://%s:%s" % (hostName, serverPort))
+	print(f"Server started http://{hostName}:{serverPort}")
 	while running:
 		try:
 			webServer.handle_request()

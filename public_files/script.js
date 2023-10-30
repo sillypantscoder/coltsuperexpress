@@ -37,9 +37,9 @@ function post(url, body) {
 
 function init() {
 	request("/status").then((v) => {
-		/** @type {{ status: string }} */
-		var d = JSON.parse(v)
-		return d;
-	}).then((v) => {
+		/** @type {{ status: string, players: string[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
+		var data = JSON.parse(v)
+		return data;
+	}).then((gameStatus) => {
 	})
 }
