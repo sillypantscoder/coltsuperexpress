@@ -36,7 +36,8 @@ def get(path: str) -> HttpResponse:
 				"Content-Type": {
 					"html": "text/html",
 					"js": "text/javascript",
-					"css": "text/css"
+					"css": "text/css",
+					"svg": "image/svg+xml"
 				}[path.split(".")[-1]]
 			},
 			"content": read_file("public_files" + path)

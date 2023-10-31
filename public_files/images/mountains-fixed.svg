@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320">
+	<style>
+#mountain {
+	fill: #bf5f00;
+}
+.snow path {
+	stroke: black;
+	stroke-width: 1px;
+	fill: white;
+}
+	</style>
+	<path id="mountain" d="M 0 320 L 800 320 L 800 250 L 657 37 L 543 225 L 475 122 L 365 256 L 252 88 L 158 192 L 65 92 L 0 250 Z" />
+	<g class="snow">
+		<path id="snow_top_1" d="M 65 92 L 30 177 L 50 185 L 55 161 L 89 185 L 94 167 L 119 181 L 121 152 Z" />
+		<path id="snow_top_4" d="M 602 128 L 657 37 L 722 134 L 704 156 L 685 125 L 674 145 L 658 121 L 644 137 L 635 126 L 615 155 Z" />
+		<path id="snow_top_2" d="M 213 131 L 252 88 L 295 152 L 269 142 L 251 148 L 239 133 Z" />
+		<path id="snow_top_3" d="M 431 176 L 475 122 L 510 175 L 482 172 L 474 180 L 454 173 Z" />
+	</g>
+</svg>
