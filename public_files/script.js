@@ -35,6 +35,43 @@ function post(url, body) {
 	})
 }
 
+// What? I like Python.
+const random = {
+	/**
+	 * Random number from 0 up to (but not including) the provided number.
+	 * @param {number} i The maximum value.
+	 * @returns {number} The random number.
+	*/
+	randomTo: (i) => {
+		return Math.floor(random.random() * i)
+	},
+	/**
+	 * Choose a random element out of an array.
+	 * @template {*} T
+	 * @param {T[]} i The list of items
+	 * @returns {T} The random item.
+	 */
+	choice: (i) => {
+		return i[random.randomTo(i.length)]
+	},
+	/**
+	 * Get a random number between a minimum (inclusive) and a maximum (exclusive).
+	 * @param {number} start The minimum value.
+	 * @param {number} stop The maximum value.
+	 * @returns {number} The random number.
+	 */
+	randint: (start, stop) => {
+		return start + random.randomTo((stop - start) + 1)
+	},
+	/**
+	 * Get a random number in the range [0, 1). Identical to `Math.random`.
+	 * @returns The random number.
+	 */
+	random: () => {
+		return Math.random()
+	}
+}
+
 function init() {
 	request("/status").then((v) => {
 		/** @type {{ status: string, players: string[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
@@ -43,3 +80,28 @@ function init() {
 	}).then((gameStatus) => {
 	})
 }
+
+function createBackgroundElement(filename, layer) {
+	var e = document.createElement("div")
+	document.querySelector(".scene-background").appendChild(e)
+	e.classList.add("decoration")
+	var time = ({
+		"front": 1,
+		"mid": random.randint(6, 15),
+		"back": random.randint(15, 22)
+	})[layer] * 1000
+	e.innerHTML = `<img src="images/${filename}.svg" width="${900000 / time}" height="auto">`
+	e.setAttribute("style", `--y: ${Math.random() * 0.7}; --layer: ${time};`)
+	setTimeout(() => {
+		// document.querySelector("#game").innerText = JSON.stringify(e.getBoundingClientRect().toJSON())
+		e.remove()
+	}, time)
+}
+var mountain_offset = 0
+function updateBackgroundFrame() {
+	if (Math.random() < 0.03) createBackgroundElement("cloud", random.choice(["mid", "back"]))
+	document.querySelector(".scene-background").setAttribute("style", `--mountain-layer-offset: ${mountain_offset}px;`)
+	mountain_offset += 1;
+	requestAnimationFrame(updateBackgroundFrame)
+}
+updateBackgroundFrame()

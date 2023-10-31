@@ -22,5 +22,23 @@ body {
 	--mountain-layer-offset: 0px;
 	background: url(images/mountains-fixed.svg), linear-gradient(0deg, #27a2c4 0%, #0000c4 100%);
 	background-size: auto 100%, auto;
-	background-position: center;
+	background-position-x: calc(0px - var(--mountain-layer-offset)), center;
+	background-position-y: center, center;
+	overflow: hidden;
+	animation: background-scroll 10s infinite linear;
+}
+.scene-background .decoration {
+	display: inline-block;
+	position: absolute;
+	top: calc(100% * var(--y));
+	animation: background-scroll-deco infinite linear;
+	animation-duration: calc(1ms * var(--layer));
+}
+@keyframes background-scroll-deco {
+	0% {
+		left: 100%;
+	}
+	100% {
+		left: -100%;
+	}
 }
