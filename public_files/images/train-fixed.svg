@@ -1,0 +1,59 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+	<style>
+.wheel {
+	stroke: black;
+	stroke-width: 5px;
+	fill: #bbb;
+}
+	</style>
+	<g>
+		<path id="cowcatcher" d="M 21 506 L 99 506 L 124 436 L 21 506 Z" opacity="NaN" stroke="black" fill="url(#grad_cowcatcher)"/>
+		<!-- <ellipse id="svg_4" cy="572" cx="192" stroke="#4f80ff" fill="#b2b2b2"/> -->
+		<!-- <ellipse id="svg_5" cy="552" cx="227" stroke="#4f80ff" fill="#b2b2b2"/> -->
+		<path id="train_mainbody" d="M 119 314 L 484 314 L 484 435 L 119 435 L 119 314 Z" stroke="black" fill="url(#grad_vertical)"/>
+		<rect id="trainfront1" height="57" width="6" y="345" x="114" stroke="black" fill="url(#grad_vertical)"/>
+		<!-- <rect id="svg_18" height="0" width="0.71429" y="377.14286" x="70" stroke="black" fill="url(#grad_vertical)"/> -->
+		<rect id="trainfront2" height="16" width="3" y="365" x="110" stroke="black" fill="url(#grad_vertical)"/>
+		<!-- <rect id="svg_20" height="0.71429" width="0" y="327.14286" x="104.28571" stroke="black" fill="url(#grad_vertical)"/> -->
+		<path id="smokestack" d="M 186 314 L 186 262 L 176 250 L 176 229 L 186 217 L 186 211 L 177 211 L 178 201 L 213 200 L 213 209 L 202 211 L 204 221 C 204 221 215 226 215 227 C 215 228 215 252 215 252 C 215 252 203 263 202 263 L 202 315 L 191 314" stroke="black" fill="url(#grad_horizontal)"/>
+		<path id="main_back" d="M 480 367 L 479 220 L 467 220 C 468 220 470 211 470 211 C 470 211 654 211 654 211 C 654 211 654 220 654 220 C 654 220 631 220 631 220 C 631 220 588 270 588 270 C 588 270 588 340 588 340 C 588 340 672 344 672 344 C 672 344 672 473 671 473 C 672 473 646 472 646 472 L 480 367 Z" stroke="black" fill="#666"/>
+		<path id="main_bottom" d="M 111 476 L 646 476 L 646 454 L 616 423 L 616 365 C 616 366 480 364 480 364 C 480 364 453 434 453 434 L 119 435 L 111 476 Z" stroke="black" fill="#444"/>
+		<ellipse id="wheel1" class="wheel" ry="33" rx="33" cy="484" cx="172" />
+		<ellipse id="wheel2" class="wheel" ry="33" rx="33" cy="484" cx="253" />
+		<ellipse id="wheel4" class="wheel" ry="33" rx="33" cy="484" cx="596" />
+		<ellipse id="wheel3" class="wheel" ry="33" rx="33" cy="484" cx="519" />
+		<rect id="piston" height="37" width="104" y="451" x="337" stroke="black" fill="url(#grad_vertical)"/>
+		<line id="piston1" stroke-width="5" y2="486" x2="251" y1="470" x1="338" stroke="black" fill="none"/>
+		<line id="piston2" stroke-width="5" y2="487" x2="253" y1="478" x1="166" stroke="black" fill="none"/>
+	</g>
+	<defs>
+		<linearGradient y2="1" x2="0" y1="0" x1="0" id="grad_vertical">
+			<stop offset="0" stop-color="#111"/>
+			<stop offset="0.33" stop-color="#4d4d4d"/>
+			<stop offset="0.66" stop-color="#3f3f3f"/>
+			<stop offset="1" stop-color="#111"/>
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+		</linearGradient>
+		<linearGradient y2="0" x2="1" y1="0" x1="0" id="grad_horizontal">
+			<stop offset="0" stop-color="#111"/>
+			<stop offset="0.33" stop-color="#4d4d4d"/>
+			<stop offset="0.66" stop-color="#3f3f3f"/>
+			<stop offset="1" stop-color="#111"/>
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+			<!-- <stop offset="NaN" stop-opacity="0" stop-color="0"/> -->
+		</linearGradient>
+		<linearGradient y2="1" x2="1" y1="0" x1="0" id="grad_cowcatcher">
+			<stop offset="0" stop-color="#212121"/>
+			<stop offset="1" stop-color="#b2b2b2"/>
+		</linearGradient>
+	</defs>
+</svg>

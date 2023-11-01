@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import typing
 import os
 import json
-from game import Game
+from game import Game, Player
 
 hostName = "0.0.0.0"
 serverPort = 8080
@@ -27,6 +27,10 @@ class HttpResponse(typing.TypedDict):
 	content: str | bytes
 
 game: Game = Game()
+
+game.addPlayer(Player("someone"))
+game.addPlayer(Player("someone else"))
+game.addPlayer(Player("a third person"))
 
 def get(path: str) -> HttpResponse:
 	if os.path.isfile("public_files" + path):

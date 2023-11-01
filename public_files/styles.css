@@ -12,6 +12,10 @@ body {
 }
 #scene {
 	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: center;
 }
 .scene-background {
 	position: absolute;
@@ -25,7 +29,7 @@ body {
 	background-position-x: calc(0px - var(--mountain-layer-offset)), center;
 	background-position-y: center, center;
 	overflow: hidden;
-	animation: background-scroll 10s infinite linear;
+	z-index: -1;
 }
 .scene-background .decoration {
 	display: inline-block;
@@ -41,4 +45,44 @@ body {
 	100% {
 		left: -100%;
 	}
+}
+
+.train-car {
+	height: 12vh;
+	width: auto;
+	position: relative;
+}
+.train-car > img {
+	height: 100%;
+	width: auto;
+}
+
+.car-contents {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.figure {
+	height: 60%;
+}
+.figure svg {
+	height: 100%;
+	width: auto;
+}
+.figure.face-right svg path {
+	transform: scaleX(-1);
+	transform-origin: center;
+}
+.figure.layer-bottom {
+	margin-bottom: 10%;
+}
+.figure.layer-top {
+	margin-bottom: 43%;
 }

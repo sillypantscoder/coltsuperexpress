@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 10">
+	<style>
+.main {
+	stroke: black;
+	stroke-width: 0.1px;
+}
+.wheel {
+	fill: #b2b2b2;
+}
+.window {
+	fill: white;
+}
+	</style>
+	<defs>
+		<linearGradient y2="1" x2="0" y1="0" x1="0" id="car_gradient">
+			<stop offset="0" stop-color="#7f3f00" />
+			<stop offset="0.11328" stop-color="#b7661b" />
+			<stop offset="0.24219" stop-color="#965213" />
+			<stop offset="0.38672" stop-color="#a86323" />
+			<stop offset="0.50391" stop-color="#96571c" />
+			<stop offset="0.66016" stop-color="#7a4411" />
+			<stop offset="0.78125" stop-color="#935113" />
+			<stop offset="0.89063" stop-color="#b25f11" />
+			<stop offset="1" stop-color="#89511f" />
+		</linearGradient>
+		<linearGradient y2="1" x2="0" y1="0" x1="0" id="connector_gradient">
+			<stop offset="0" stop-color="#bbb" />
+			<stop offset="0.5" stop-color="white" />
+			<stop offset="1" stop-color="#bbb" />
+		</linearGradient>
+	</defs>
+	<g>
+		<g>
+			<rect id="connectorLeft" class="main" x="0" y="7.5" width="2" height="1" fill="url(#connector_gradient)" />
+			<rect id="connectorRight" class="main" x="19" y="7.5" width="2" height="1" fill="url(#connector_gradient)" />
+		</g>
+		<g>
+			<rect id="train-mainbody" class="main" x="1" y="1" width="19" height="8" fill="url(#car_gradient)" />
+		</g>
+		<g>
+			<circle id="wheel1" class="main wheel" cx="3" cy="9" r="1" />
+			<circle id="wheel2" class="main wheel" cx="6" cy="9" r="1" />
+			<circle id="wheel3" class="main wheel" cx="15" cy="9" r="1" />
+			<circle id="wheel4" class="main wheel" cx="18" cy="9" r="1" />
+		</g>
+		<g>
+			<rect id="window1" class="main window" x="2" y="3" width="2" height="2" />
+			<rect id="window2" class="main window" x="5" y="3" width="2" height="2" />
+			<rect id="window3" class="main window" x="8" y="3" width="2" height="2" />
+			<rect id="window4" class="main window" x="11" y="3" width="2" height="2" />
+			<rect id="window5" class="main window" x="14" y="3" width="2" height="2" />
+			<rect id="window6" class="main window" x="17" y="3" width="2" height="2" />
+		</g>
+	</g>
+</svg>

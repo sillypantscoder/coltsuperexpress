@@ -1,0 +1,54 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+ <title>Train</title>
+ <g id="Layer_1">
+  <title>Layer 1</title>
+  <path id="svg_1" d="m21.42857,506.42857l77.85714,0l24.28571,-70.71429l-102.14286,70.71429z" opacity="NaN" stroke="#000000" fill="url(#svg_70)"/>
+  <ellipse id="svg_4" cy="572.14286" cx="192.14286" stroke="#4f80ff" fill="#b2b2b2"/>
+  <ellipse id="svg_5" cy="552.85714" cx="227.85714" stroke="#4f80ff" fill="#b2b2b2"/>
+  <path stroke="#000000" id="svg_7" d="m118.57144,313.57144l365.71425,0l0,121.42857l-365.71425,0l0,-121.42857z" opacity="undefined" fill="url(#svg_16)"/>
+  <rect id="svg_17" height="57.85714" width="6.42857" y="345.71429" x="114.28571" stroke="#000000" fill="url(#svg_16)"/>
+  <rect id="svg_18" height="0" width="0.71429" y="377.14286" x="70" stroke="#000000" fill="url(#svg_16)"/>
+  <rect stroke="#000000" id="svg_19" height="16.42857" width="3.57143" y="365" x="110" fill="url(#svg_16)"/>
+  <rect id="svg_20" height="0.71429" width="0" y="327.14286" x="104.28571" stroke="#000000" fill="url(#svg_16)"/>
+  <path id="svg_21" d="m186.42857,313.57143l0,-51.42857l-10,-12.14286l0,-21.42857l10,-11.42857l0,-5.71429l-9.28571,0l0.71428,-10.71428l35,-0.71429l0,9.28571l-10.71428,2.14286l1.42857,9.28572c0.71428,0 11.42857,5.71428 11.42857,6.42857c0,0.71428 0,25.0102 0,25c0,0.0102 -12.14286,10.71428 -12.85714,10.71428l0,52.14286l-10.71429,-1.42857" opacity="NaN" stroke="#000000" fill="url(#svg_22)"/>
+  <path id="svg_23" d="m480,367.14286l-0.71429,-147.14286l-12.14285,0c0.62534,0 2.85714,-9.28571 2.85714,-9.28571c0,0 184.28571,0 184.28571,0c0,0 0,9.39496 0,9.28571c0,0.10925 -23.02463,0 -23.57142,0c0.5364,0 -42.85715,50 -42.85715,50c0,0 0,70.03279 0,70c0,0.03279 84.28572,4.28571 84.28572,4.28571c0,0 0,128.62103 -0.71429,128.57143c0.71429,0.0496 -25,-0.71428 -25,-0.71428l-166.42857,-105z" opacity="NaN" stroke="#000000" fill="#666666"/>
+  <path id="svg_2" d="m110.71429,475.71429l535.71428,0l0,-22.14286l-30.71428,-30.71429l0,-57.85714c0,0.67412 -135.71429,-0.71429 -135.71429,-0.71429c0,0 -27.14286,70 -27.14286,70l-333.57142,0.71429l-8.57143,40.71429z" opacity="NaN" stroke="#000000" fill="#424242"/>
+  <ellipse stroke="#000000" stroke-width="5" ry="33.57143" rx="33.57143" id="svg_3" cy="484.28569" cx="172.14286" fill="#b2b2b2"/>
+  <ellipse stroke="#000000" stroke-width="5" ry="33.57143" rx="33.57143" id="svg_24" cy="484.28569" cx="253.59962" fill="#b2b2b2"/>
+  <ellipse stroke="#000000" stroke-width="5" ry="33.57143" rx="33.57143" id="svg_25" cy="484.28569" cx="596.69364" fill="#b2b2b2"/>
+  <ellipse stroke="#000000" stroke-width="5" ry="33.57143" rx="33.57143" id="svg_26" cy="484.28569" cx="519.28864" fill="#b2b2b2"/>
+  <rect id="svg_27" height="37.14286" width="104.28571" y="451.42857" x="337.14286" stroke="#000000" fill="url(#svg_16)"/>
+  <line stroke-width="5" id="svg_29" y2="486.42857" x2="251.42857" y1="470.71429" x1="338.57143" stroke="#000000" fill="none"/>
+  <line stroke-width="5" id="svg_30" y2="487.14286" x2="253.57143" y1="478.57143" x1="166.42857" stroke="#000000" fill="none"/>
+ </g>
+ <defs>
+  <linearGradient y2="1" x2="0" y1="0" x1="0" id="svg_16">
+   <stop offset="0" stop-opacity="0.99609" stop-color="#191919"/>
+   <stop offset="0.30469" stop-color="#4d4d4d"/>
+   <stop offset="0.64063" stop-opacity="0.99609" stop-color="#3f3f3f"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#191919"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+  </linearGradient>
+  <linearGradient y2="0" x2="1" y1="0" x1="0" id="svg_22">
+   <stop offset="0" stop-opacity="0.99609" stop-color="#191919"/>
+   <stop offset="0.30469" stop-color="#4d4d4d"/>
+   <stop offset="0.64063" stop-opacity="0.99609" stop-color="#3f3f3f"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#191919"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+  </linearGradient>
+  <linearGradient y2="1" x2="1" y1="0" x1="0" id="svg_70">
+   <stop offset="0" stop-opacity="0.98828" stop-color="#212121"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#b2b2b2"/>
+  </linearGradient>
+ </defs>
+</svg>

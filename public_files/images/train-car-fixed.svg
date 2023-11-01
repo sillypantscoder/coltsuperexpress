@@ -1,0 +1,50 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+	<g>
+		<rect id="train-mainbody" stroke="black" height="252" width="553" y="226" x="109" stroke-width="5" fill="url(#svg_10)" />
+		<ellipse fill="#b2b2b2" stroke="#4f80ff" cx="192.14286" cy="572.14286" id="svg_4" />
+		<ellipse fill="#b2b2b2" stroke="#4f80ff" cx="227.85714" cy="552.85714" id="svg_5" />
+		<!-- <rect fill="url(#svg_16)" stroke="black" x="70" y="377.14286" width="0.71429" height="0" id="svg_18" /> -->
+		<ellipse id="wheel1" fill="#<defs>
+		<linearGradient y2="1" x2="0" y1="0" x1="0" id="car_gradient">
+			<stop offset="0" stop-color="#7f3f00" />
+			<stop offset="0.11328" stop-color="#b7661b" />
+			<stop offset="0.24219" stop-color="#965213" />
+			<stop offset="0.38672" stop-color="#a86323" />
+			<stop offset="0.50391" stop-color="#96571c" />
+			<stop offset="0.66016" stop-color="#7a4411" />
+			<stop offset="0.78125" stop-color="#935113" />
+			<stop offset="0.89063" stop-color="#b25f11" />
+			<stop offset="1" stop-color="#89511f" />
+		</linearGradient>
+	</defs>b2b2b2" cx="172" cy="484" rx="33" ry="33" stroke-width="5" stroke="black" />
+		<ellipse id="wheel2" fill="#b2b2b2" cx="253" cy="484" rx="33" ry="33" stroke-width="5" stroke="black" />
+		<ellipse id="wheel4" fill="#b2b2b2" cx="596" cy="484" rx="33" ry="33" stroke-width="5" stroke="black" />
+		<ellipse id="wheel3" fill="#b2b2b2" cx="519" cy="484" rx="33" ry="33" stroke-width="5" stroke="black" />
+		<rect id="window1" height="62" width="60" y="292" x="141" stroke-width="5" stroke="black" fill="#e5e5e5" />
+		<!-- <rect id="svg_12" height="1" width="0" y="312" x="193" stroke-width="5" stroke="black" fill="#00767c" /> -->
+		<rect id="window2" height="62" width="60" y="292" x="228" stroke-width="5" stroke="black" fill="#e5e5e5" />
+		<rect id="window3" height="62" width="60" y="292" x="318" stroke-width="5" stroke="black" fill="#e5e5e5" />
+		<rect id="window4" height="62" width="60" y="292" x="403" stroke-width="5" stroke="black" fill="#e5e5e5" />
+		<rect id="window5" height="62" width="60" y="292" x="486" stroke-width="5" stroke="black" fill="#e5e5e5" />
+		<rect id="window6" height="62" width="60" y="292" x="572" stroke-width="5" stroke="black" fill="#e5e5e5" />
+	</g>
+	<defs>
+		<!-- <linearGradient id="svg_16" x1="0" y1="0" x2="0" y2="1">
+			<stop stop-color="#191919" stop-opacity="0.99609" offset="0" />
+			<stop stop-color="#4d4d4d" offset="0.30469" />
+			<stop stop-color="#3f3f3f" stop-opacity="0.99609" offset="0.64063" />
+			<stop stop-color="#191919" stop-opacity="0.99609" offset="1" />
+		</linearGradient> -->
+		<linearGradient y2="1" x2="0" y1="0" x1="0" id="svg_10">
+			<stop offset="0" stop-color="#7f3f00" />
+			<stop offset="0.11328" stop-color="#b7661b" />
+			<stop offset="0.24219" stop-color="#965213" />
+			<stop offset="0.38672" stop-color="#a86323" />
+			<stop offset="0.50391" stop-color="#96571c" />
+			<stop offset="0.66016" stop-color="#7a4411" />
+			<stop offset="0.78125" stop-color="#935113" />
+			<stop offset="0.89063" stop-color="#b25f11" />
+			<stop offset="1" stop-color="#89511f" />
+		</linearGradient>
+	</defs>
+</svg>
