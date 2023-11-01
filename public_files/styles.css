@@ -38,6 +38,10 @@ body {
 	animation: background-scroll-deco infinite linear;
 	animation-duration: calc(1ms * var(--layer));
 }
+.scene-background .decoration.frontlayer {
+	top: unset;
+	bottom: 0;
+}
 @keyframes background-scroll-deco {
 	0% {
 		left: 100%;

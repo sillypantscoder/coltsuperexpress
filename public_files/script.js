@@ -63,6 +63,9 @@ const random = {
 	randint: (start, stop) => {
 		return start + random.randomTo((stop - start) + 1)
 	},
+	randfloat: (start, stop) => {
+		return start + (random.random() * (stop - start));
+	},
 	/**
 	 * Get a random number in the range [0, 1). Identical to `Math.random`.
 	 * @returns The random number.
@@ -89,17 +92,18 @@ const COLORS = [
 	"000", "888", "FFF"
 ]
 
-function createBackgroundElement(filename, layer) {
+function createBackgroundElement(filename, layer, size) {
 	var e = document.createElement("div")
 	document.querySelector(".scene-background").appendChild(e)
 	e.classList.add("decoration")
 	var time = ({
-		"front": 1,
+		"front": random.randfloat(1, 3),
 		"mid": random.randint(6, 15),
 		"back": random.randint(15, 22)
 	})[layer] * 1000
-	e.innerHTML = `<img src="images/${filename}.svg" width="${900000 / time}" height="auto">`
+	e.innerHTML = `<img src="images/${filename}.svg" width="${(size * 100000) / time}" height="auto">`
 	e.setAttribute("style", `--y: ${Math.random() * 0.7}; --layer: ${time};`)
+	if (layer == "front") e.classList.add("frontlayer")
 	setTimeout(() => {
 		// document.querySelector("#game").innerText = JSON.stringify(e.getBoundingClientRect().toJSON())
 		e.remove()
@@ -107,18 +111,20 @@ function createBackgroundElement(filename, layer) {
 }
 var mountain_offset = 0
 function updateBackgroundFrame() {
-	if (Math.random() < 0.01) createBackgroundElement("cloud", random.choice(["mid", "back"]))
+	if (Math.random() < 0.01) createBackgroundElement("cloud", random.choice(["mid", "back"]), 9)
+	if (Math.random() < 0.004) createBackgroundElement("cactus-fixed", "front", 1)
 	document.querySelector(".scene-background").setAttribute("style", `--mountain-layer-offset: ${mountain_offset}px;`)
 	mountain_offset += 1;
 	requestAnimationFrame(updateBackgroundFrame)
 }
 
-function init() {
+function updateScene() {
 	request("/status").then((v) => {
 		/** @type {{ status: string, players: string[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
 		var data = JSON.parse(v)
 		return data;
 	}).then((gameStatus) => {
+		// Draw the scene
 		for (var carno = 0; carno < gameStatus.train.length; carno++) {
 			var car = gameStatus.train[carno];
 			var e = document.createElement("div")
@@ -140,6 +146,10 @@ function init() {
 			}
 		}
 	})
+}
+
+function init() {
+	updateScene()
 	updateBackgroundFrame()
 }
 init()
