@@ -1,8 +1,9 @@
 import typing
 
 class Card:
-	def __init__(self, figure: "Figure"):
+	def __init__(self, figure: "Figure", srcGame: "Game"):
 		self.figure = figure
+		self.game = srcGame
 	def execute(self):
 		pass
 	def getIcon(self):
@@ -25,8 +26,7 @@ class Figure:
 
 class MoveForwardsCard(Card):
 	def __init__(self, figure: Figure, srcGame: "Game"):
-		super().__init__(figure)
-		self.game = srcGame
+		super().__init__(figure, srcGame)
 	def execute(self):
 		if self.figure.stunned:
 			self.figure.stunned = False
@@ -34,8 +34,8 @@ class MoveForwardsCard(Card):
 			self.game.moveFigure(self.figure, self.figure.direction)
 
 class TurnCard(Card):
-	def __init__(self, figure: Figure):
-		super().__init__(figure)
+	def __init__(self, figure: Figure, srcGame: "Game"):
+		super().__init__(figure, srcGame)
 	def execute(self):
 		if self.figure.stunned:
 			self.figure.stunned = False
@@ -46,8 +46,8 @@ class TurnCard(Card):
 				self.figure.direction = "left"
 
 class ChangeLevelCard(Card):
-	def __init__(self, figure: Figure):
-		super().__init__(figure)
+	def __init__(self, figure: Figure, srcGame: "Game"):
+		super().__init__(figure, srcGame)
 	def execute(self):
 		if self.figure.stunned:
 			self.figure.stunned = False
@@ -56,13 +56,22 @@ class ChangeLevelCard(Card):
 
 class ShootCard(Card):
 	def __init__(self, figure: Figure, srcGame: "Game"):
-		super().__init__(figure)
-		self.game = srcGame
+		super().__init__(figure, srcGame)
 	def execute(self):
 		if self.figure.stunned:
 			self.figure.stunned = False
 		else:
 			self.game.shoot(self.figure)
+
+class RevengeCard(Card):
+	def __init__(self, figure: Figure, srcGame: "Game"):
+		super().__init__(figure, srcGame)
+	def execute(self):
+		if self.figure.stunned:
+			self.figure.stunned = False
+			self.game.shoot(self.figure)
+		else:
+			pass
 
 class Player:
 	def __init__(self, name: str):

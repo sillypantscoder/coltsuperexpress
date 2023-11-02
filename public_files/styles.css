@@ -73,6 +73,9 @@ body {
 	justify-content: center;
 }
 
+.car-contents .figure {
+	opacity: 0;
+}
 .figure {
 	height: 60%;
 }
@@ -89,4 +92,32 @@ body {
 }
 .figure.layer-top {
 	margin-bottom: 43%;
+}
+.figure.stunned {
+	margin-left: 10%;
+	margin-right: 10%;
+}
+.figure.layer-bottom.stunned {
+	margin-bottom: 6%;
+}
+.figure.layer-top.stunned {
+	margin-bottom: 37%;
+}
+
+.realfigures {
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.realfigures .figure {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: scaleX(var(--flip));
+	transform-origin: center;
+	transition: top 0.3s linear, left 0.3s linear, transform 0.3s linear;
+}
+.figure.real-stunned {
+	transform: scaleX(var(--flip)) rotate(90deg);
 }

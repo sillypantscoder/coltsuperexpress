@@ -5,8 +5,9 @@
 		<link href="styles.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
-		<div id="scene"><div class="scene-background"></div></div>
+		<div id="scene"><div class="scene-background"></div><div class="realfigures"></div></div>
 		<div id="game"></div>
+		<script>window.addEventListener("error", (e) => alert(`${e.message} :${e.lineno}`))</script>
 		<script src="script.js"></script>
 	</body>
 </html>

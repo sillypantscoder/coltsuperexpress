@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import typing
 import os
 import json
-from game import Game, Player
+from game import Game, Player, MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard
 
 hostName = "0.0.0.0"
 serverPort = 8080
@@ -61,6 +61,24 @@ def get(path: str) -> HttpResponse:
 				"Content-Type": "application/json"
 			},
 			"content": json.dumps(game.toDict())
+		}
+	elif path.startswith("/card/"):
+		data = path.split("/")[2:]
+		card = {
+			"move_forwards": MoveForwardsCard,
+			"turn": TurnCard,
+			"change_level": ChangeLevelCard,
+			"shoot": ShootCard,
+			"revenge": RevengeCard
+		}[data[0]]
+		figure = game.players[int(data[1])].figure
+		card(figure, game).execute()
+		return {
+			"status": 200,
+			"headers": {
+				"Content-Type": "text/html"
+			},
+			"content": ""
 		}
 	else: # 404 page
 		return {
