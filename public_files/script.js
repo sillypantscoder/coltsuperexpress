@@ -1,3 +1,9 @@
+Array.prototype.remove = function (o) { if (this.includes(o)) { this.splice(this.indexOf(o), 1) } }
+
+Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+	return (((this - in_min) * (out_max - out_min)) / (in_max - in_min)) + out_min;
+}
+
 /**
  * Send an HTTP request and return the response.
  * @param {string} url The URL to get data from.
@@ -55,7 +61,7 @@ const random = {
 		return i[random.randomTo(i.length)]
 	},
 	/**
-	 * Get a random number between a minimum (inclusive) and a maximum (exclusive).
+	 * Get a random whole number between a minimum (inclusive) and a maximum (exclusive).
 	 * @param {number} start The minimum value.
 	 * @param {number} stop The maximum value.
 	 * @returns {number} The random number.
@@ -63,6 +69,12 @@ const random = {
 	randint: (start, stop) => {
 		return start + random.randomTo((stop - start) + 1)
 	},
+	/**
+	 * Get a random floating point number between a minimum and a maximum.
+	 * @param {number} start The minimum value.
+	 * @param {number} stop The maximum value.
+	 * @returns {number} The random number.
+	 */
 	randfloat: (start, stop) => {
 		return start + (random.random() * (stop - start));
 	},
@@ -109,10 +121,49 @@ function createBackgroundElement(filename, layer, size) {
 		e.remove()
 	}, time)
 }
+class Decoration {
+	init(time, size, filename) {
+		this.elm = document.createElement("div")
+		document.querySelector(".scene-background").appendChild(this.elm)
+		this.size = size
+		this.maxTime = time
+		this.time = time
+		this.elm.classList.add("decoration")
+		this.elm.innerHTML = `<img src="images/${filename}.svg" width="${size}" height="auto">`
+		this.y = Math.random() * 0.7
+		decorations.push(this)
+	}
+	tick() {
+		this.time -= 1;
+		this.elm.setAttribute("style", `--y: ${this.y}; --x: ${1 - (this.time / this.maxTime)}; --size: ${this.size}px;`)
+		if (this.time < 0) {
+			this.elm.remove()
+			decorations.remove(this)
+		}
+	}
+}
+class CloudDecoration extends Decoration {
+	constructor() {
+		super()
+		var layer = random.randfloat(8, 20)
+		this.init(layer * 60, layer.map(8, 20, 250, 50), "cloud")
+	}
+}
+class CactusDecoration extends Decoration {
+	constructor() {
+		super()
+		this.init(random.randfloat(60, 120), random.randfloat(50, 100), "cactus-fixed")
+		this.elm.classList.add("frontlayer")
+	}
+}
 var mountain_offset = 0
+/** @type {Decoration[]} */
+var decorations = []
 function updateBackgroundFrame() {
-	if (Math.random() < 0.01) createBackgroundElement("cloud", random.choice(["mid", "back"]), 9)
-	if (Math.random() < 0.004) createBackgroundElement("cactus-fixed", "front", 1)
+	if (Math.random() < 0.006) new CloudDecoration()
+	if (Math.random() < 0.004) new CactusDecoration()
+	var p_d = [...decorations];
+	for (var deco of p_d) deco.tick()
 	document.querySelector(".scene-background").setAttribute("style", `--mountain-layer-offset: ${mountain_offset}px;`)
 	mountain_offset += 1;
 	requestAnimationFrame(updateBackgroundFrame)

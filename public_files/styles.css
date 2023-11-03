@@ -35,8 +35,8 @@ body {
 	display: inline-block;
 	position: absolute;
 	top: calc(100% * var(--y));
-	animation: background-scroll-deco infinite linear;
-	animation-duration: calc(1ms * var(--layer));
+	/* left: calc(calc(100% + var(--size)) * var(--x)); */
+	right: calc(calc(calc(100% + var(--size)) * var(--x)) - var(--size));
 }
 .scene-background .decoration.frontlayer {
 	top: unset;
