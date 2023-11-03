@@ -122,34 +122,67 @@ function createBackgroundElement(filename, layer, size) {
 	}, time)
 }
 class Decoration {
-	init(time, size, filename) {
+	constructor() {
 		this.elm = document.createElement("div")
 		document.querySelector(".scene-background").appendChild(this.elm)
+		this.elm.classList.add("decoration")
+		decorations.push(this)
+	}
+	tick() {}
+	destroy() {
+		this.elm.remove()
+		decorations.remove(this)
+	}
+}
+class TrainSteamDecoration extends Decoration {
+	constructor() {
+		super()
+		this.styles = `border-radius: 50%; width: var(--size); height: var(--size); background: white; top: calc(var(--y) - calc(var(--size) / 2)); left: calc(var(--x) - calc(var(--size) / 2));`
+		this.time = 0
+		this.pos = [0, 0]
+		this.v = [random.randfloat(-0.5, 0.5), random.randfloat(-3.5, -2.5)]
+		var e = document.querySelector(".train-car-locomotive")
+		if (e) {
+			var box = e.getBoundingClientRect()
+			this.pos[0] = box.left + (0.66 * box.width)
+			this.pos[1] = box.top + (0.04 * box.height)
+		} else this.destroy()
+	}
+	tick() {
+		this.time += 1
+		this.pos[0] += this.v[0]
+		this.pos[1] += this.v[1]
+		this.v[0] -= random.randfloat(0.1, 0.3)
+		this.v[1] *= 0.99
+		this.elm.setAttribute("style", `${this.styles} --size: ${this.time.map(0, 120, 0, 150)}px; opacity: ${this.time.map(0, 80, 1, 0)}; --x: ${this.pos[0]}px; --y: ${this.pos[1]}px;`)
+		if (this.time > 120) this.destroy()
+	}
+}
+class ScrollDecoration extends Decoration {
+	init(time, size, filename) {
 		this.size = size
 		this.maxTime = time
 		this.time = time
-		this.elm.classList.add("decoration")
+		this.elm.classList.add("scrolldecoration")
 		this.elm.innerHTML = `<img src="images/${filename}.svg" width="${size}" height="auto">`
 		this.y = Math.random() * 0.7
-		decorations.push(this)
 	}
 	tick() {
 		this.time -= 1;
 		this.elm.setAttribute("style", `--y: ${this.y}; --x: ${1 - (this.time / this.maxTime)}; --size: ${this.size}px;`)
 		if (this.time < 0) {
-			this.elm.remove()
-			decorations.remove(this)
+			this.destroy()
 		}
 	}
 }
-class CloudDecoration extends Decoration {
+class CloudDecoration extends ScrollDecoration {
 	constructor() {
 		super()
 		var layer = random.randfloat(8, 20)
 		this.init(layer * 60, layer.map(8, 20, 250, 50), "cloud")
 	}
 }
-class CactusDecoration extends Decoration {
+class CactusDecoration extends ScrollDecoration {
 	constructor() {
 		super()
 		this.init(random.randfloat(60, 120), random.randfloat(50, 100), "cactus-fixed")
@@ -162,6 +195,7 @@ var decorations = []
 function updateBackgroundFrame() {
 	if (Math.random() < 0.006) new CloudDecoration()
 	if (Math.random() < 0.004) new CactusDecoration()
+	if (mountain_offset % 1 == 0) new TrainSteamDecoration()
 	var p_d = [...decorations];
 	for (var deco of p_d) deco.tick()
 	document.querySelector(".scene-background").setAttribute("style", `--mountain-layer-offset: ${mountain_offset}px;`)

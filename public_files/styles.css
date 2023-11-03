@@ -34,11 +34,13 @@ body {
 .scene-background .decoration {
 	display: inline-block;
 	position: absolute;
+}
+.scene-background .decoration.scrolldecoration {
 	top: calc(100% * var(--y));
 	/* left: calc(calc(100% + var(--size)) * var(--x)); */
 	right: calc(calc(calc(100% + var(--size)) * var(--x)) - var(--size));
 }
-.scene-background .decoration.frontlayer {
+.scene-background .decoration.scrolldecoration.frontlayer {
 	top: unset;
 	bottom: 0;
 }
