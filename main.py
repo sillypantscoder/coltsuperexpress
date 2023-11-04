@@ -81,6 +81,7 @@ def get(path: str) -> HttpResponse:
 			"content": ""
 		}
 	else: # 404 page
+		print("404 GET " + path)
 		return {
 			"status": 404,
 			"headers": {
@@ -98,6 +99,7 @@ def post(path: str, body: bytes) -> HttpResponse:
 			"content": ""
 		}
 	else:
+		print("404 POST " + path)
 		return {
 			"status": 404,
 			"headers": {

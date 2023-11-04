@@ -84,6 +84,21 @@ const random = {
 	 */
 	random: () => {
 		return Math.random()
+	},
+	_randomTriangle: (mid) => {
+		var u = random.random();
+		if (u < mid) return Math.sqrt(u * mid);
+		return 1 - Math.sqrt((1 - u) * (1 - mid));
+	},
+	/**
+	 * Get a random floating point number in a triangular distribution.
+	 * @param {number} min The minimum number
+	 * @param {number} mid The most common number
+	 * @param {number} max The maximum number
+	 * @returns {number} The random number.
+	 */
+	triangular: (min, mid, max) => {
+		return min + (random._randomTriangle((mid - min) / (max - min)) * (max - min));
 	}
 }
 
@@ -140,6 +155,7 @@ class TrainSteamDecoration extends Decoration {
 		this.styles = `border-radius: 50%; width: var(--size); height: var(--size); background: white; top: calc(var(--y) - calc(var(--size) / 2)); left: calc(var(--x) - calc(var(--size) / 2));`
 		this.time = 0
 		this.pos = [0, 0]
+		// this.v = [random.randfloat(-1.5, 1.5), random.randfloat(-25, -5)]
 		this.v = [random.randfloat(-0.5, 0.5), random.randfloat(-3.5, -2.5)]
 		var e = document.querySelector(".train-car-locomotive")
 		if (e) {
@@ -152,20 +168,22 @@ class TrainSteamDecoration extends Decoration {
 		this.time += 1
 		this.pos[0] += this.v[0]
 		this.pos[1] += this.v[1]
+		// this.v[0] *= 1.1
+		// this.v[1] += 0.1
 		this.v[0] -= random.randfloat(0.1, 0.3)
 		this.v[1] *= 0.99
 		this.elm.setAttribute("style", `${this.styles} --size: ${this.time.map(0, 120, 0, 150)}px; opacity: ${this.time.map(0, 80, 1, 0)}; --x: ${this.pos[0]}px; --y: ${this.pos[1]}px;`)
-		if (this.time > 120) this.destroy()
+		if (this.time > 80) this.destroy()
 	}
 }
 class ScrollDecoration extends Decoration {
-	init(time, size, filename) {
+	init(time, size, innerHTML) {
 		this.size = size
 		this.maxTime = time
 		this.time = time
 		this.elm.classList.add("scrolldecoration")
-		this.elm.innerHTML = `<img src="images/${filename}.svg" width="${size}" height="auto">`
-		this.y = Math.random() * 0.7
+		this.elm.innerHTML = innerHTML
+		this.y = Math.random() * 0.6
 	}
 	tick() {
 		this.time -= 1;
@@ -175,17 +193,38 @@ class ScrollDecoration extends Decoration {
 		}
 	}
 }
-class CloudDecoration extends ScrollDecoration {
+class SVGScrollDecoration extends ScrollDecoration {
+	init(time, size, filename) {
+		super.init(time, size, `<img src="images/${filename}.svg" width="${size}" height="auto">`)
+	}
+}
+class CloudDecoration extends SVGScrollDecoration {
 	constructor() {
 		super()
 		var layer = random.randfloat(8, 20)
 		this.init(layer * 60, layer.map(8, 20, 250, 50), "cloud")
 	}
 }
-class CactusDecoration extends ScrollDecoration {
+class CactusDecoration extends SVGScrollDecoration {
 	constructor() {
 		super()
 		this.init(random.randfloat(60, 120), random.randfloat(50, 100), "cactus-fixed")
+		this.elm.classList.add("frontlayer")
+	}
+}
+class BushDecoration extends ScrollDecoration {
+	constructor() {
+		super()
+		var width = 100
+		var height = 200
+		var svg = `<div style='height: ${height / 2}px;'></div>`
+		for (var i = 0; i < 30; i++) {
+			var r = random.randint(10, 50)
+			var cx = random.triangular(0, width / 2, width);
+			var cy = random.triangular(0, height, height);
+			svg += `<div style="position: absolute; top: ${cx - r}px; left: ${cy - r}px; width: ${r * 2}px; height: ${r * 2}px; border-radius: 50%; background: green;"></div>`
+		}
+		this.init(random.randfloat(60, 120), width * 2, svg)
 		this.elm.classList.add("frontlayer")
 	}
 }
@@ -195,12 +234,13 @@ var decorations = []
 function updateBackgroundFrame() {
 	if (Math.random() < 0.006) new CloudDecoration()
 	if (Math.random() < 0.004) new CactusDecoration()
-	if (mountain_offset % 1 == 0) new TrainSteamDecoration()
+	if (Math.random() < 0.004) new BushDecoration()
+	if (Math.random() < 0.75) new TrainSteamDecoration()
 	var p_d = [...decorations];
 	for (var deco of p_d) deco.tick()
 	document.querySelector(".scene-background").setAttribute("style", `--mountain-layer-offset: ${mountain_offset}px;`)
 	mountain_offset += 1;
-	requestAnimationFrame(updateBackgroundFrame)
+	if (decorations.reduce((a, b) => a + ((b instanceof BushDecoration) * 1), 0) == 0 || true) requestAnimationFrame(updateBackgroundFrame)
 }
 
 /**
@@ -248,7 +288,7 @@ function updateScene(gameStatus) {
 }
 function updateData() {
 	request("/status").then((v) => {
-		/** @type {{ status: string, players: string[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
+		/** @type {{ status: "joining" | "schemin", players: string[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
 		var data = JSON.parse(v)
 		return data;
 	}).then((gameStatus) => { try {
@@ -267,6 +307,38 @@ function updateData() {
 		}
 		// Update the scene
 		updateScene(gameStatus)
+		// Update the bottom panel
+		var playername = location.search.substring(1)
+		var container = document.querySelector(".maingamecontents")
+		if (gameStatus.status == "joining") {
+			if (gameStatus.players.includes(playername)) {
+				// We have already joined
+				if (container.dataset.screen != "wait_to_start") {
+					container.dataset.screen = "wait_to_start"
+				}
+			} else {
+				// Join please!
+				if (container.dataset.screen != "join") {
+					container.dataset.screen = "join"
+					container.innerText = ""
+					container.appendChild(document.createElement("h3"))
+					container.children[0].innerText = "Join the game"
+					container.appendChild(document.createElement("div"))
+					container.children[1].innerHTML = `Enter your name: <input type="text" id="playername_box">`
+					container.appendChild(document.createElement("div"))
+					container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
+				}
+			}
+		}
+		// Player list
+		[...document.querySelector(".playerlist").children].forEach((e) => e.remove())
+		for (var i = 0; i < gameStatus.players.length; i++) {
+			var player = gameStatus.players[i]
+			var e = document.createElement("div")
+			document.querySelector(".playerlist").appendChild(e)
+			e.innerHTML = `<div class="annotation"></div><div class="color"></div><div class="name"></div>`
+			e.children[2].innerText = player
+		}
 		// Loop
 		/*if (Math.random() < 0.9) */setTimeout(updateData, 300)
 	} catch (e) { alert(e) }})
@@ -276,3 +348,19 @@ function init() {
 	updateBackgroundFrame()
 }
 init()
+
+
+
+
+
+
+// GAME ACTIONS ------
+
+function join_game() {
+	var newname = document.querySelector("#playername_box")
+	var container = document.querySelector(".maingamecontents");
+	[...container.children].forEach((e) => e.remove())
+	post("/join_game", newname).then((e) => {
+		location.replace("/?" + newname)
+	})
+}

@@ -6,6 +6,7 @@ body {
 	margin: 0;
 	height: 100%;
 	flex-direction: column;
+	font-family: sans-serif;
 }
 #scene, #game {
 	flex-grow: 1;
@@ -39,10 +40,16 @@ body {
 	top: calc(100% * var(--y));
 	/* left: calc(calc(100% + var(--size)) * var(--x)); */
 	right: calc(calc(calc(100% + var(--size)) * var(--x)) - var(--size));
+	width: var(--size);
 }
 .scene-background .decoration.scrolldecoration.frontlayer {
 	top: unset;
 	bottom: 0;
+	overflow: visible;
+}
+.decoration svg {
+	width: 100%;
+	height: auto;
 }
 @keyframes background-scroll-deco {
 	0% {
@@ -122,4 +129,33 @@ body {
 }
 .figure.real-stunned {
 	transform: scaleX(var(--flip)) rotate(90deg);
+}
+
+
+
+#game {
+	display: flex;
+	flex-direction: column;
+}
+#game .maingamecontents {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+#game .playerlist {
+	flex-grow: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+#game .playerlist > div {
+	border: 1px solid black;
+	border-bottom: none;
+	border-top-left-radius: 1em;
+	border-top-right-radius: 1em;
+	margin: 1em;
+	margin-bottom: 0;
+	padding: 1em;
 }
