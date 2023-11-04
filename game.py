@@ -78,6 +78,7 @@ class Player:
 		self.name: str = name
 		self.figure: Figure = Figure(self)
 		self.plan: list[Card] = []
+		self.ready: bool = False
 
 class Game:
 	def __init__(self):
@@ -186,7 +187,10 @@ class Game:
 	def toDict(self):
 		return {
 			"status": self.status,
-			"players": [p.name for p in self.players],
+			"players": [{
+				"name": p.name,
+				"ready": p.ready
+			} for p in self.players],
 			"train": [[{
 				"player": f.player.name if f.player != None else None,
 				"direction": f.direction,
@@ -194,6 +198,7 @@ class Game:
 				"stunned": f.stunned
 			} for f in car] for car in self.train]
 		}
+	def readyPlayer(self):
 
 if __name__ == "__main__":
 	# some testing

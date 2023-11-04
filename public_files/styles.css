@@ -159,3 +159,9 @@ body {
 	margin-bottom: 0;
 	padding: 1em;
 }
+
+.readybtn {
+	background: blue;
+	color: white;
+	padding: 1em;
+}

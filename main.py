@@ -7,6 +7,20 @@ from game import Game, Player, MoveForwardsCard, TurnCard, ChangeLevelCard, Shoo
 hostName = "0.0.0.0"
 serverPort = 8080
 
+class URLQuery:
+	def __init__(self, q):
+		self.orig = q
+		self.fields = {}
+		for f in q.split("&"):
+			s = f.split("=")
+			if len(s) >= 2:
+				self.fields[s[0]] = s[1]
+	def get(self, key):
+		if key in self.fields:
+			return self.fields[key]
+		else:
+			return ''
+
 def read_file(filename: str) -> bytes:
 	"""Read a file and return the contents."""
 	f = open(filename, "rb")
@@ -21,18 +35,19 @@ def write_file(filename: str, content: bytes):
 	f.close()
 
 class HttpResponse(typing.TypedDict):
-	"""A dict containing a """
+	"""A dict containing an HTTP response."""
 	status: int
 	headers: dict[str, str]
 	content: str | bytes
 
 game: Game = Game()
 
-game.addPlayer(Player("someone"))
-game.addPlayer(Player("someone else"))
-game.addPlayer(Player("a third person"))
+# game.addPlayer(Player("someone"))
+# game.addPlayer(Player("someone else"))
+# game.addPlayer(Player("a third person"))
 
-def get(path: str) -> HttpResponse:
+def get(path: str, query: URLQuery) -> HttpResponse:
+	playername = query.get("name")
 	if os.path.isfile("public_files" + path):
 		return {
 			"status": 200,
@@ -91,8 +106,9 @@ def get(path: str) -> HttpResponse:
 		}
 
 def post(path: str, body: bytes) -> HttpResponse:
-	if path == "/":
-		bodydata = body.decode("UTF-8").split("\n")
+	bodydata = body.decode("UTF-8").split("\n")
+	if path == "/join_game":
+		game.addPlayer(Player(bodydata[0]))
 		return {
 			"status": 200,
 			"headers": {},
@@ -110,7 +126,8 @@ def post(path: str, body: bytes) -> HttpResponse:
 
 class MyServer(BaseHTTPRequestHandler):
 	def do_GET(self):
-		res = get(self.path)
+		splitpath = self.path.split("?")
+		res = get(splitpath[0], URLQuery(''.join(splitpath[1:])))
 		self.send_response(res["status"])
 		for h in res["headers"]:
 			self.send_header(h, res["headers"][h])
