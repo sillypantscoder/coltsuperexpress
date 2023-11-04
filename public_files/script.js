@@ -121,8 +121,12 @@ const random = {
 /** @type {{name: string, img: string}[]} */
 const CARDS = [
 	{"name": "forwards", 	"img": "M 2 4 L 6 4 L 6 3 L 8 5 L 6 7 L 6 6 L 2 6 Z"},
-	{"name": "turn", 		"img": "M 1.1 5 Q 1.2 8 4.7 8 L 8 8 L 8 6 L 4 6 C 2.5 6 2.5 4 4 4 L 7 4 L 7 5 L 9 3 L 7 1 L 7 2 L 4.7 2 Q 1.2 2 1.1 5 Z M 8 6 L 8 8 Z"},
-	{"name": "changeLevel", "img": "M 2 2 L 2 7 L 1 7 L 3 9 L 5 7 L 4 7 L 4 2 Z M 8 8 L 6 8 L 6 3 L 5 3 L 7 1 L 9 3 L 8 3 Z"}
+	{"name": "turn", 		"img": "M 1 5 Q 1 8 4 8 L 8 8 L 8 6 L 4 6 C 2.5 6 2.5 4 4 4 L 7 4 L 7 5 L 9 3 L 7 1 L 7 2 L 4 2 Q 1 2 1 5 Z M 8 6 L 8 8 Z"},
+	{"name": "changeLevel", "img": "M 2 2 L 2 7 L 1 7 L 3 9 L 5 7 L 4 7 L 4 2 Z M 8 8 L 6 8 L 6 3 L 5 3 L 7 1 L 9 3 L 8 3 Z"},
+	{"name": "shoot",		"img": "M 8 4 L 8.1 3.7 L 7.9 3.6 L 7.7 4 L 4.4 4 L 4.4 3.9 L 4.3 3.9 L 4.3 4.6 L 4.4 4.6 L 4.4 4.5 \
+L 6.4 4.5 Q 6.5 5 7 5.1 L 7.1 6.5 L 7.9 6.5 L 7.8 5.1 A 1 1 0 0 0 7.9 4.7 L 8.3 4.6 L 8.2 4 Z M 7 5 Q 6.5 4.9 6.6 4.6 L 7 4.6 \
+M 6.9 4.6 L 6.8 4.8 L 6.9 4.8 L 7.1 4.6 M 4.1 4 Q 4.2 3.6 3.2 3.2 Q 3.7 3.7 3.7 3.9 Q 3.1 3.5 2.4 3.2 Q 2.65 3.5 3 3.9 Q 2.4 3.6 1.8 3.5 \
+Q 2.05 3.7 2.3 4 Q 1.7 4.1 1.1 4.2 Q 1.9 4.3 2.4 4.3 Q 2 4.6 1.7 4.8 Q 2.35 4.75 3 4.5 Q 2.8 4.9 2.5 5.1 Q 3.15 4.9 3.6 4.5 Q 3.5 4.9 3.2 5.2 Q 4.1 4.8 4.1 4.5 Z"},
 ]
 const COLORS = [
 	"888",
@@ -261,7 +265,7 @@ function updateBackgroundFrame() {
 
 /**
  * Update the scene with the game's status.
- * @param {{ status: string, players: { name: string, ready: boolean }[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} gameStatus The game's current status.
+ * @param {{ status: "joining" | "schemin" | "executing", players: { name: string, ready: boolean }[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} gameStatus The game's current status.
  */
 function updateScene(gameStatus) {
 	[...document.querySelectorAll("#scene > * + * + *")].forEach((e) => e.remove())
@@ -309,9 +313,10 @@ C 30 223 44 198 43 237 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z' fill='
 		else if (e) e.classList.remove("real-stunned")
 	}
 }
+var playername = query.name
 function updateData() {
 	request("/status").then((v) => {
-		/** @type {{ status: "joining" | "schemin", players: { name: string, ready: boolean }[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
+		/** @type {{ status: "joining" | "schemin" | "executing", players: { name: string, ready: boolean }[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
 		var data = JSON.parse(v)
 		return data;
 	}).then((gameStatus) => { try {
@@ -340,15 +345,19 @@ fill='#${COLORS[i + 1]}' /></svg>`
 		// Update the scene
 		updateScene(gameStatus)
 		// Update the bottom panel
-		var playername = query.name
 		var container = document.querySelector(".maingamecontents")
 		if (gameStatus.status == "joining") {
-			if (gameStatus.players.some((val) => val == playername)) {
+			if (gameStatus.players.some((val) => val.name == playername)) {
 				// We have already joined
 				if (container.dataset.screen != "wait_to_start") {
 					container.dataset.screen = "wait_to_start"
-					container.appendChild(document.createElement("div"))
-					container.children[0].innerHTML = `<div class="readybtn" onclick="ready()">I'm Ready!</div>`
+					if (gameStatus.players.find((val) => val.name == playername).ready) {
+						container.appendChild(document.createElement("div"))
+						container.children[0].innerHTML = `<div class="readybtn" style="background: red;" onclick="ready()">Not Ready</div>`
+					} else {
+						container.appendChild(document.createElement("div"))
+						container.children[0].innerHTML = `<div class="readybtn" onclick="ready()">I'm Ready!</div>`
+					}
 				}
 			} else {
 				// Join please!
@@ -399,4 +408,7 @@ function join_game() {
 	})
 }
 function ready() {
+	var container = document.querySelector(".maingamecontents");
+	[...container.children].forEach((e) => e.remove())
+	post("/ready", playername)
 }

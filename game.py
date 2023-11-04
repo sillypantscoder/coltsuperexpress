@@ -198,7 +198,20 @@ class Game:
 				"stunned": f.stunned
 			} for f in car] for car in self.train]
 		}
-	def readyPlayer(self):
+	def readyPlayer(self, name: str):
+		for p in self.players:
+			if p.name == name:
+				p.ready = not p.ready
+		if len(self.players) == 0: return
+		if self.status == "joining":
+			allready = True
+			for p in self.players:
+				if not p.ready:
+					allready = False
+			if allready:
+				self.startRound()
+	def startRound(self):
+		self.status = "schemin"
 
 if __name__ == "__main__":
 	# some testing

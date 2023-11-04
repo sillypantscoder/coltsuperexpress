@@ -114,6 +114,13 @@ def post(path: str, body: bytes) -> HttpResponse:
 			"headers": {},
 			"content": ""
 		}
+	elif path == "/ready":
+		game.readyPlayer(bodydata[0])
+		return {
+			"status": 200,
+			"headers": {},
+			"content": ""
+		}
 	else:
 		print("404 POST " + path)
 		return {
