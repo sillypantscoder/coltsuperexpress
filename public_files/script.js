@@ -118,6 +118,21 @@ const random = {
 	window.query = php_var_ret
 })();
 
+/**
+ * A player
+ * @typedef {{ name: string, ready: boolean }} Player
+ */
+
+/**
+ * A figure
+ * @typedef {{ player: string, direction: str, height: boolean, stunned: boolean }} Figure
+ */
+
+/**
+ * The game's status
+ * @typedef {{ status: "joining" | "schemin" | "executing", players: Player[], train: Figure[][] }} GameStatus
+ */
+
 /** @type {{name: string, img: string}[]} */
 const CARDS = [
 	{"name": "forwards", 	"img": "M 2 4 L 6 4 L 6 3 L 8 5 L 6 7 L 6 6 L 2 6 Z"},
@@ -125,8 +140,15 @@ const CARDS = [
 	{"name": "changeLevel", "img": "M 2 2 L 2 7 L 1 7 L 3 9 L 5 7 L 4 7 L 4 2 Z M 8 8 L 6 8 L 6 3 L 5 3 L 7 1 L 9 3 L 8 3 Z"},
 	{"name": "shoot",		"img": "M 8 4 L 8.1 3.7 L 7.9 3.6 L 7.7 4 L 4.4 4 L 4.4 3.9 L 4.3 3.9 L 4.3 4.6 L 4.4 4.6 L 4.4 4.5 \
 L 6.4 4.5 Q 6.5 5 7 5.1 L 7.1 6.5 L 7.9 6.5 L 7.8 5.1 A 1 1 0 0 0 7.9 4.7 L 8.3 4.6 L 8.2 4 Z M 7 5 Q 6.5 4.9 6.6 4.6 L 7 4.6 \
-M 6.9 4.6 L 6.8 4.8 L 6.9 4.8 L 7.1 4.6 M 4.1 4 Q 4.2 3.6 3.2 3.2 Q 3.7 3.7 3.7 3.9 Q 3.1 3.5 2.4 3.2 Q 2.65 3.5 3 3.9 Q 2.4 3.6 1.8 3.5 \
-Q 2.05 3.7 2.3 4 Q 1.7 4.1 1.1 4.2 Q 1.9 4.3 2.4 4.3 Q 2 4.6 1.7 4.8 Q 2.35 4.75 3 4.5 Q 2.8 4.9 2.5 5.1 Q 3.15 4.9 3.6 4.5 Q 3.5 4.9 3.2 5.2 Q 4.1 4.8 4.1 4.5 Z"},
+M 6.9 4.6 L 6.8 4.8 L 6.9 4.8 L 7.1 4.6 M 4.1 4 Q 4.2 3.6 3.2 3.2 Q 3.7 3.7 3.7 3.9 Q 3.1 3.5 2.4 3.2 Q 2.65 3.5 3 3.9 Q 2.4 3.6 \
+1.8 3.5 Q 2.05 3.7 2.3 4 Q 1.7 4.1 1.1 4.2 Q 1.9 4.3 2.4 4.3 Q 2 4.6 1.7 4.8 Q 2.35 4.75 3 4.5 Q 2.8 4.9 2.5 5.1 Q 3.15 4.9 3.6 \
+4.5 Q 3.5 4.9 3.2 5.2 Q 4.1 4.8 4.1 4.5 Z"},
+	{"name": "revenge",		"img": "M 7.5 4 L 7.6 3.7 L 7.4 3.6 L 7.2 4 L 3.9 4 L 3.9 3.9 L 3.8 3.9 L 3.8 4.6 L 3.9 4.6 L 3.9 4.5 \
+L 5.9 4.5 Q 6 5 6.5 5.1 L 6.6 6.5 L 7.4 6.5 L 7.3 5.1 A 1 1 0 0 0 7.4 4.7 L 7.8 4.6 L 7.7 4 Z M 6.5 5 Q 6 4.9 6.1 4.6 L 6.5 4.6 Z \
+M 6.4 4.6 L 6.3 4.8 L 6.4 4.8 L 6.6 4.6 M 3.6 4 Q 3.7 3.6 2.7 3.2 Q 3.2 3.7 3.2 3.9 Q 2.6 3.5 1.9 3.2 Q 2.15 3.5 2.5 3.9 Q 1.9 3.6 1.3 3.5 \
+Q 1.55 3.7 1.8 4 Q 1.2 4.1 0.6 4.2 Q 1.4 4.3 1.9 4.3 Q 1.5 4.6 1.2 4.8 Q 1.85 4.75 2.5 4.5 Q 2.3 4.9 2 5.1 Q 2.65 4.9 3.1 4.5 Q 3 4.9 2.7 5.2 \
+Q 3.6 4.8 3.6 4.5 Z M 2.5 6.3 Q 4 7.7 6.5 7.4 Q 8.6 7 8.6 4.8 Q 8.7 2.5 5.5 2.3 L 5.6 3 L 4 2.1 L 5.5 1.2 L 5.5 1.8 Q 9.1 2 9.2 4.8 \
+Q 9.2 7.5 6.5 8 Q 3.8 8.2 2.3 6.8 Z"}
 ]
 const COLORS = [
 	"888",
@@ -251,6 +273,12 @@ class BushDecoration extends ScrollDecoration {
 var mountain_offset = 0
 /** @type {Decoration[]} */
 var decorations = []
+async function updateBackgroundFrameLoop() {
+	while (true) {
+		updateBackgroundFrame()
+		await new Promise((resolve) => requestAnimationFrame(resolve));
+	}
+}
 function updateBackgroundFrame() {
 	if (Math.random() < 0.006) new CloudDecoration()
 	if (Math.random() < 0.004) new CactusDecoration()
@@ -260,18 +288,22 @@ function updateBackgroundFrame() {
 	for (var deco of p_d) deco.tick()
 	document.querySelector(".scene-background").setAttribute("style", `--mountain-layer-offset: ${mountain_offset}px;`)
 	mountain_offset += 1;
-	if (decorations.reduce((a, b) => a + ((b instanceof BushDecoration) * 1), 0) == 0 || true) requestAnimationFrame(updateBackgroundFrame)
+}
+
+async function getData() {
+	var d = await request("/status")
+	/** @type {GameStatus} */
+	var data = JSON.parse(d)
+	return data;
 }
 
 /**
  * Update the scene with the game's status.
- * @param {{ status: "joining" | "schemin" | "executing", players: { name: string, ready: boolean }[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} gameStatus The game's current status.
+ * @param {GameStatus} gameStatus The game's current status.
  */
 function updateScene(gameStatus) {
 	[...document.querySelectorAll("#scene > * + * + *")].forEach((e) => e.remove())
 	// Draw the scene
-	/** @type {{figure: { player: string, direction: str, height: boolean, stunned: boolean }, figElm: HTMLDivElement}[]} */
-	var figures = []
 	for (var carno = 0; carno < gameStatus.train.length; carno++) {
 		var car = gameStatus.train[carno];
 		var e = document.createElement("div")
@@ -286,24 +318,27 @@ function updateScene(gameStatus) {
 			var figElm = document.createElement("div")
 			e.children[1].appendChild(figElm)
 			figElm.classList.add("figure")
+			figElm.dataset.ownername = figure.player
 			figElm.innerHTML = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 440'><path d='
 M 79 440 L 134 440 L 200 332 L 253 440 L 298 440 L 254 299 L 254 240 L 295 231 L 295 173 L 283 134 C 271 123 239 131 225 127
 C 224 120 225 113 225 113 C 225 113 237 111 251 103 257 97 259 95 262 86 C 264 70 265 69 263 59 L 320 59 L 270 44 L 251 0
 L 192 0 L 175 40 L 121 50 L 178 54 C 179 54 176 74 178 83 C 182 90 184 94 191 99 C 199 107 205 108 205 108
 C 207 120 203 126 203 126 L 160 128 L 143 153 L 103 184 L 52 184 L 54 181 L 51 179 L 47 184 L 0 187 L 2 203 L 29 203
 C 30 223 44 198 43 237 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z' fill='#${
-				COLORS[gameStatus.players.findIndex((val) => val.name = figure.player) + 1]
-			}' /></svg>`
+	COLORS[gameStatus.players.findIndex((val) => val.name = figure.player) + 1]
+}' /></svg>`
 			if (figure.direction == "right") figElm.classList.add("face-right")
 			if (figure.height == false) figElm.classList.add("layer-bottom")
 			if (figure.height == true) figElm.classList.add("layer-top")
 			if (figure.stunned == true) figElm.classList.add("stunned")
-			figures.push({
-				figure,
-				figElm
-			})
 		}
 	}
+}
+
+/**
+ * @param {{figure: Figure, figElm: HTMLDivElement}[]} figures The list of figures to update using
+ */
+function updatePlayerPositions(figures) {
 	// Update the player positions
 	for (var figureData of figures) {
 		var box = figureData.figElm.getBoundingClientRect()
@@ -314,24 +349,22 @@ C 30 223 44 198 43 237 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z' fill='
 	}
 }
 var playername = query.name
-function updateData() {
-	request("/status").then((v) => {
-		/** @type {{ status: "joining" | "schemin" | "executing", players: { name: string, ready: boolean }[], train: { player: string, direction: str, height: boolean, stunned: boolean }[][] }} */
-		var data = JSON.parse(v)
-		return data;
-	}).then((gameStatus) => { try {
-		// Add the player elements (if needed)
-		var currentPlayerElms = [...document.querySelectorAll(".realfigures > *")]
-		if (currentPlayerElms.length != gameStatus.players.length) {
-			currentPlayerElms.forEach((e) => e.remove())
-			// Add elements for the figures
-			for (var i = 0; i < gameStatus.players.length; i++) {
-				var e = document.createElement("div")
-				e.classList.add("figure")
-				document.querySelector(".realfigures").appendChild(e)
-				e.innerHTML = `
-					<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 440'>
-					<path d='M 79 440 L 134 440 L 200 332 L 253 440 L 298 440 L 254 299
+/**
+ * Update the display elements for the players.
+ * @param {Player[]} players The game's list of players.
+ */
+function addRealPlayerElements(players) {
+	var currentPlayerElms = [...document.querySelectorAll(".realfigures > *")]
+	if (currentPlayerElms.length != players.length) {
+		currentPlayerElms.forEach((e) => e.remove())
+		// Add elements for the figures
+		for (var i = 0; i < players.length; i++) {
+			var e = document.createElement("div")
+			e.classList.add("figure")
+			document.querySelector(".realfigures").appendChild(e)
+			e.innerHTML = `
+				<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 440'>
+				<path d='M 79 440 L 134 440 L 200 332 L 253 440 L 298 440 L 254 299
 L 254 240 L 295 231 L 295 173 L 283 134 C 271 123 239 131 225 127 C 224 120 225 113 225
 113 C 225 113 237 111 251 103 C 257 97 259 95 262 86 C 264 70 265 69 263 59 L 320 59 L
 270 44 L 251 0 L 192 0 L 175 40 L 121 50 L 178 54 C 179 54 176 74 178 83 C 182 90 184
@@ -339,56 +372,114 @@ L 254 240 L 295 231 L 295 173 L 283 134 C 271 123 239 131 225 127 C 224 120 225 
 184 L 52 184 L 54 181 L 51 179 L 47 184 L 0 187 L 2 203 L 29 203 C 30 223 44 198 43 237
 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z'
 fill='#${COLORS[i + 1]}' /></svg>`
-				e.dataset.playername = gameStatus.players[i].name
-			}
+			e.dataset.playername = players[i].name
 		}
-		// Update the scene
-		updateScene(gameStatus)
-		// Update the bottom panel
-		var container = document.querySelector(".maingamecontents")
-		if (gameStatus.status == "joining") {
-			if (gameStatus.players.some((val) => val.name == playername)) {
-				// We have already joined
-				if (container.dataset.screen != "wait_to_start") {
-					container.dataset.screen = "wait_to_start"
-					if (gameStatus.players.find((val) => val.name == playername).ready) {
-						container.appendChild(document.createElement("div"))
-						container.children[0].innerHTML = `<div class="readybtn" style="background: red;" onclick="ready()">Not Ready</div>`
-					} else {
-						container.appendChild(document.createElement("div"))
-						container.children[0].innerHTML = `<div class="readybtn" onclick="ready()">I'm Ready!</div>`
-					}
-				}
-			} else {
-				// Join please!
-				if (container.dataset.screen != "join") {
-					container.dataset.screen = "join"
-					container.innerText = ""
-					container.appendChild(document.createElement("h3"))
-					container.children[0].innerText = "Join the game"
-					container.appendChild(document.createElement("div"))
-					container.children[1].innerHTML = `Enter your name: <input type="text" id="playername_box">`
-					container.appendChild(document.createElement("div"))
-					container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
-				}
-			}
-		}
-		// Player list
-		[...document.querySelector(".playerlist").children].forEach((e) => e.remove())
-		for (var i = 0; i < gameStatus.players.length; i++) {
-			var player = gameStatus.players[i]
-			var e = document.createElement("div")
-			document.querySelector(".playerlist").appendChild(e)
-			e.innerHTML = `<div class="annotation"></div><div class="color"></div><div class="name"></div>`
-			e.children[2].innerText = player.name
-		}
-		// Loop
-		/*if (Math.random() < 0.9) */setTimeout(updateData, 300)
-	} catch (e) { alert(e.stack) }})
+	}
 }
-function init() {
-	updateData()
-	updateBackgroundFrame()
+/**
+ * Update the bottom half of the screen with the game's status.
+ * @param {GameStatus} gameStatus The game's current status.
+ * @returns {boolean} Whether we need to continue updating the data.
+ */
+function updateData(gameStatus) {
+	// Add the player elements (if needed)
+	addRealPlayerElements(gameStatus.players)
+	// Update the bottom panel
+	var container = document.querySelector(".maingamecontents")
+	if (gameStatus.status == "joining") {
+		if (gameStatus.players.some((val) => val.name == playername)) {
+			// We have already joined
+			if (container.dataset.screen != "wait_to_start") {
+				container.dataset.screen = "wait_to_start"
+				if (gameStatus.players.find((val) => val.name == playername).ready) {
+					container.appendChild(document.createElement("div"))
+					container.children[0].innerHTML = `<div class="giantbtn" style="background: red;" onclick="ready()">Not Ready</div>`
+				} else {
+					container.appendChild(document.createElement("div"))
+					container.children[0].innerHTML = `<div class="giantbtn" onclick="ready()">I'm Ready!</div>`
+				}
+			}
+		} else {
+			// Join please!
+			if (container.dataset.screen != "join") {
+				container.dataset.screen = "join"
+				container.innerText = ""
+				container.appendChild(document.createElement("h3"))
+				container.children[0].innerText = "Join the game"
+				container.appendChild(document.createElement("div"))
+				container.children[1].innerHTML = `Enter your name: <input type="text" id="playername_box">`
+				container.appendChild(document.createElement("div"))
+				container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
+			}
+		}
+	} else if (gameStatus.status == "schemin") {
+		// hehehehehe scheming
+		if (gameStatus.players.find((val) => val.name == playername).ready) {
+			container.dataset.screen = "schemin_done"
+			container.appendChild(document.createElement("div"))
+			container.children[0].innerHTML = `<h3>Wait for everyone else to make their plan!</h3>`
+		} else {
+			if (container.dataset.screen != "schemin") {
+				container.dataset.screen = "schemin"
+				container.innerText = ""
+				// Let the player make their plan
+				container.appendChild(document.createElement("div"))
+				container.children[0].innerHTML = `<h3>Make your plan!</h3>`
+				container.appendChild(document.createElement("div"))
+				container.children[1].innerHTML = `<h3>Your current plan:</h3>`
+				for (var i = 0; i < 3; i++) {
+					container.children[1].innerHTML += `<div class="card" data-slot="P${i}" data-contents="" onclick="clickCard(event.target)"></div>`
+				}
+				container.appendChild(document.createElement("div"))
+				container.children[2].innerHTML = `<h3>Available actions:</h3>`
+				for (var i = 0; i < CARDS.length; i++) {
+					container.children[2].innerHTML += `<div class="card" data-slot="C${i}" data-contents="${i}" onclick="clickCard(event.target)"></div>`
+				}
+			}
+		}
+	}
+	// Player list
+	[...document.querySelector(".playerlist").children].forEach((e) => e.remove())
+	for (var i = 0; i < gameStatus.players.length; i++) {
+		var player = gameStatus.players[i]
+		var e = document.createElement("div")
+		document.querySelector(".playerlist").appendChild(e)
+		e.innerHTML = `<div class="annotation"></div><div class="color"></div><div class="name"></div>`
+		e.children[2].innerText = player.name
+	}
+	// Go through the train to find all the figures
+	/** @type {{figure: Figure, figElm: HTMLDivElement}[]} */
+	var figures = []
+	for (var car of gameStatus.train) {
+		for (var figure of car) {
+			figures.push({
+				figure,
+				figElm: document.querySelector(`div[data-ownername='${figure.player}']`)
+			})
+		}
+	}
+	updatePlayerPositions(figures)
+}
+async function updateDataLoop() {
+	while (true) {
+		updateData(await getData());
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
+}
+function addCardCSS() {
+	var e = document.createElement("style")
+	for (var i = 0; i < CARDS.length; i++) {
+		e.innerText += `.card[data-contents='${i}'] { background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='${CARDS[i].img}' fill='gray' /></svg>"); }`
+	}
+	document.head.appendChild(e)
+}
+async function init() {
+	updateBackgroundFrameLoop()
+	getData().then((e) => {
+		updateScene(e)
+		updateDataLoop();
+	})
+	addCardCSS()
 }
 init()
 
@@ -411,4 +502,26 @@ function ready() {
 	var container = document.querySelector(".maingamecontents");
 	[...container.children].forEach((e) => e.remove())
 	post("/ready", playername)
+}
+/**
+ * Update the clicky card thing! :D
+ * @param {HTMLDivElement} elm The element that was clicked.
+ */
+function clickCard(elm) {
+	if (elm.dataset.contents == "") return
+	if (elm.dataset.slot[0] == "P") {
+		// Plan slot was clicked
+		var contents = elm.dataset.contents
+		elm.dataset.contents = ""
+		var e = document.querySelector(`[data-slot='C${contents}']`)
+		e.dataset.contents = contents
+	} else {
+		// Card slot was clicked
+		var contents = elm.dataset.contents
+		var e = document.querySelector(`[data-slot^='P'][data-contents='']`)
+		if (e) {
+			elm.dataset.contents = ""
+			e.dataset.contents = contents
+		}
+	}
 }

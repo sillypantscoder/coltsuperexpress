@@ -160,8 +160,21 @@ body {
 	padding: 1em;
 }
 
-.readybtn {
+.giantbtn {
 	background: blue;
 	color: white;
 	padding: 1em;
+}
+
+.card {
+	width: 5em;
+	height: 5em;
+	border-radius: 1em;
+	display: inline-block;
+	margin: 1em;
+	border: 0.5em solid gray;
+	background-size: contain !important;
+}
+.card[data-contents=""] {
+	border-style: dashed;
 }

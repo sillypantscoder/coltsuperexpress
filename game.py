@@ -212,6 +212,8 @@ class Game:
 				self.startRound()
 	def startRound(self):
 		self.status = "schemin"
+		for p in self.players:
+			p.ready = False
 
 if __name__ == "__main__":
 	# some testing
