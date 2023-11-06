@@ -6,9 +6,8 @@ class Card:
 		self.game = srcGame
 	def execute(self):
 		pass
-	def getIcon(self):
+	def getName(self):
 		return ""
-		# come on @augustoroman
 
 class Figure:
 	def __init__(self, player: "Player | None" = None):
@@ -32,6 +31,8 @@ class MoveForwardsCard(Card):
 			self.figure.stunned = False
 		else:
 			self.game.moveFigure(self.figure, self.figure.direction)
+	def getName(self):
+		return "forwards"
 
 class TurnCard(Card):
 	def __init__(self, figure: Figure, srcGame: "Game"):
@@ -44,6 +45,8 @@ class TurnCard(Card):
 				self.figure.direction = "right"
 			else:
 				self.figure.direction = "left"
+	def getName(self):
+		return "turn"
 
 class ChangeLevelCard(Card):
 	def __init__(self, figure: Figure, srcGame: "Game"):
@@ -53,6 +56,8 @@ class ChangeLevelCard(Card):
 			self.figure.stunned = False
 		else:
 			self.figure.height = not self.figure.height
+	def getName(self):
+		return "changeLevel"
 
 class ShootCard(Card):
 	def __init__(self, figure: Figure, srcGame: "Game"):
@@ -62,6 +67,8 @@ class ShootCard(Card):
 			self.figure.stunned = False
 		else:
 			self.game.shoot(self.figure)
+	def getName(self):
+		return "shoot"
 
 class RevengeCard(Card):
 	def __init__(self, figure: Figure, srcGame: "Game"):
@@ -72,6 +79,10 @@ class RevengeCard(Card):
 			self.game.shoot(self.figure)
 		else:
 			pass
+	def getName(self):
+		return "revenge"
+
+card_types: "list[type[Card]]" = [MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard]
 
 class Player:
 	def __init__(self, name: str):
@@ -79,12 +90,22 @@ class Player:
 		self.figure: Figure = Figure(self)
 		self.plan: list[Card] = []
 		self.ready: bool = False
+	def setPlan(self, srcGame: "Game", data: list[str]):
+		self.plan = []
+		for item in data:
+			card = {
+				c(self.figure, srcGame).getName(): c
+				for c in card_types
+			}[item]
+			self.plan.append(card(self.figure, srcGame))
+		self.ready = True
 
 class Game:
 	def __init__(self):
 		self.status: typing.Literal["joining", "schemin", "executing"] = "joining"
 		self.players: list[Player] = []
 		self.train: list[list[Figure]] = []
+		self.lastcard: tuple[Card, str] | None = None
 	def addPlayer(self, player: Player):
 		self.players.append(player)
 		self.initTrain()
@@ -196,7 +217,8 @@ class Game:
 				"direction": f.direction,
 				"height": f.height,
 				"stunned": f.stunned
-			} for f in car] for car in self.train]
+			} for f in car] for car in self.train],
+			"lastcard": [self.lastcard[0].getName(), self.lastcard[1]] if self.lastcard != None else None
 		}
 	def readyPlayer(self, name: str):
 		for p in self.players:
@@ -210,10 +232,46 @@ class Game:
 					allready = False
 			if allready:
 				self.startRound()
+		elif self.status == "executing":
+			allready = True
+			for p in self.players:
+				if not p.ready:
+					allready = False
+			if allready:
+				self.startCard()
 	def startRound(self):
 		self.status = "schemin"
+		self.lastcard = None
 		for p in self.players:
 			p.ready = False
+	def setPlan(self, data: list[str]):
+		playername = data[0]
+		for p in self.players:
+			if p.name == playername:
+				p.setPlan(self, data[1:])
+		allready = True
+		for p in self.players:
+			if not p.ready:
+				allready = False
+		if allready:
+			self.startCard()
+	def startCard(self):
+		self.status = "executing"
+		for p in self.players:
+			p.ready = False
+		# Find the card
+		maxcards = -1
+		maxcplayer = self.players[0]
+		for p in self.players:
+			if len(p.plan) > maxcards:
+				maxcards = len(p.plan)
+				maxcplayer = p
+		if maxcards == 0:
+			# We are out of cards!
+			self.startRound()
+		else:
+			self.lastcard = (maxcplayer.plan.pop(0), maxcplayer.name)
+			self.lastcard[0].execute()
 
 if __name__ == "__main__":
 	# some testing

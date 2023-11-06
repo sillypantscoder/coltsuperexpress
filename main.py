@@ -47,7 +47,7 @@ game: Game = Game()
 # game.addPlayer(Player("a third person"))
 
 def get(path: str, query: URLQuery) -> HttpResponse:
-	playername = query.get("name")
+	# playername = query.get("name")
 	if os.path.isfile("public_files" + path):
 		return {
 			"status": 200,
@@ -116,6 +116,13 @@ def post(path: str, body: bytes) -> HttpResponse:
 		}
 	elif path == "/ready":
 		game.readyPlayer(bodydata[0])
+		return {
+			"status": 200,
+			"headers": {},
+			"content": ""
+		}
+	elif path == "/submit_plan":
+		game.setPlan(bodydata)
 		return {
 			"status": 200,
 			"headers": {},

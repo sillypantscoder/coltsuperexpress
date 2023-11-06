@@ -130,7 +130,7 @@ const random = {
 
 /**
  * The game's status
- * @typedef {{ status: "joining" | "schemin" | "executing", players: Player[], train: Figure[][] }} GameStatus
+ * @typedef {{ status: "joining" | "schemin" | "executing", players: Player[], train: Figure[][], lastcard: string[] }} GameStatus
  */
 
 /** @type {{name: string, img: string}[]} */
@@ -254,6 +254,13 @@ class CactusDecoration extends SVGScrollDecoration {
 		this.elm.classList.add("frontlayer")
 	}
 }
+class RockDecoration extends SVGScrollDecoration {
+	constructor() {
+		super()
+		this.init(random.randfloat(60, 120), random.randfloat(50, 75), "rock")
+		this.elm.classList.add("frontlayer")
+	}
+}
 class BushDecoration extends ScrollDecoration {
 	constructor() {
 		super()
@@ -283,6 +290,7 @@ function updateBackgroundFrame() {
 	if (Math.random() < 0.006) new CloudDecoration()
 	if (Math.random() < 0.004) new CactusDecoration()
 	if (Math.random() < 0.004) new BushDecoration()
+	if (Math.random() < 0.004) new RockDecoration()
 	if (Math.random() < 0.75) new TrainSteamDecoration()
 	var p_d = [...decorations];
 	for (var deco of p_d) deco.tick()
@@ -325,7 +333,7 @@ C 224 120 225 113 225 113 C 225 113 237 111 251 103 257 97 259 95 262 86 C 264 7
 L 192 0 L 175 40 L 121 50 L 178 54 C 179 54 176 74 178 83 C 182 90 184 94 191 99 C 199 107 205 108 205 108
 C 207 120 203 126 203 126 L 160 128 L 143 153 L 103 184 L 52 184 L 54 181 L 51 179 L 47 184 L 0 187 L 2 203 L 29 203
 C 30 223 44 198 43 237 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z' fill='#${
-	COLORS[gameStatus.players.findIndex((val) => val.name = figure.player) + 1]
+	COLORS[gameStatus.players.findIndex((val) => val.name == figure.player) + 1]
 }' /></svg>`
 			if (figure.direction == "right") figElm.classList.add("face-right")
 			if (figure.height == false) figElm.classList.add("layer-bottom")
@@ -341,6 +349,7 @@ C 30 223 44 198 43 237 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z' fill='
 function updatePlayerPositions(figures) {
 	// Update the player positions
 	for (var figureData of figures) {
+		if (figureData.figElm == null) continue;
 		var box = figureData.figElm.getBoundingClientRect()
 		var e = document.querySelector(`.realfigures .figure[data-playername='${figureData.figure.player}']`)
 		if (e) e.setAttribute("style", `top: ${box.top}px; left: ${box.left}px; width: ${box.width}px; height: ${box.height}px; --flip: ${figureData.figure.direction == 'left' ? 1 : -1};`)
@@ -374,6 +383,8 @@ L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z'
 fill='#${COLORS[i + 1]}' /></svg>`
 			e.dataset.playername = players[i].name
 		}
+		// Update the scene (for the new players)
+		getData().then(updateScene)
 	}
 }
 /**
@@ -382,8 +393,11 @@ fill='#${COLORS[i + 1]}' /></svg>`
  * @returns {boolean} Whether we need to continue updating the data.
  */
 function updateData(gameStatus) {
+	console.log("start")
+	console.log(gameStatus.players.map((v) => v.name))
 	// Add the player elements (if needed)
 	addRealPlayerElements(gameStatus.players)
+	console.log(gameStatus.players.map((v) => v.name))
 	// Update the bottom panel
 	var container = document.querySelector(".maingamecontents")
 	if (gameStatus.status == "joining") {
@@ -435,18 +449,41 @@ function updateData(gameStatus) {
 				for (var i = 0; i < CARDS.length; i++) {
 					container.children[2].innerHTML += `<div class="card" data-slot="C${i}" data-contents="${i}" onclick="clickCard(event.target)"></div>`
 				}
+				container.appendChild(document.createElement("div"))
+				container.children[3].innerHTML = `<div class="giantbtn disabled" onclick="submitThePlan()">Submit The Plan</div>`
 			}
 		}
+	} else if (gameStatus.status == "executing") {
+		// aaaaaaa!
+		updateScene(gameStatus) // things are happening!
+		if (gameStatus.players.find((val) => val.name == playername).ready) {
+			container.appendChild(document.createElement("div"))
+			container.children[0].innerHTML = `<h3>Wait for everyone else to finish!</h3>`
+		} else {
+			container.innerText = ""
+			var cardno = CARDS.map((v) => v.name).indexOf(gameStatus.lastcard[0])
+			var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(gameStatus.lastcard[1]) + 1]
+			container.appendChild(document.createElement("div"))
+			container.children[0].innerHTML = `<b><div style="width: 1em; height: 1em; border: 0.1em solid black; border-radius: 50%; background: #${color}; display: inline-block;"></div> ${gameStatus.lastcard[1]}</b>`
+			container.appendChild(document.createElement("div"))
+			container.children[1].innerHTML = `<div class="card" data-contents="${cardno}"></div>`
+			container.appendChild(document.createElement("div"))
+			container.children[2].innerHTML = `<div class="giantbtn" onclick="ready()">Next</div>`
+		}
 	}
+	console.log(gameStatus.players.map((v) => v.name));
 	// Player list
 	[...document.querySelector(".playerlist").children].forEach((e) => e.remove())
 	for (var i = 0; i < gameStatus.players.length; i++) {
 		var player = gameStatus.players[i]
 		var e = document.createElement("div")
 		document.querySelector(".playerlist").appendChild(e)
-		e.innerHTML = `<div class="annotation"></div><div class="color"></div><div class="name"></div>`
+		e.innerHTML = `<div></div><div class="user-color"></div><div class="user-name"></div>`
+		if (player.ready) e.children[0].classList.add("user-annotation")
+		e.children[1].setAttribute("style", `background: #${COLORS[i + 1]};`)
 		e.children[2].innerText = player.name
 	}
+	console.log(gameStatus.players.map((v) => v.name));
 	// Go through the train to find all the figures
 	/** @type {{figure: Figure, figElm: HTMLDivElement}[]} */
 	var figures = []
@@ -490,17 +527,21 @@ init()
 
 // GAME ACTIONS ------
 
+function emptyMainContents() {
+	var container = document.querySelector(".maingamecontents");
+	container.dataset.screen = "nonexistent";
+	[...container.children].forEach((e) => e.remove())
+}
+
 function join_game() {
 	var newname = document.querySelector("#playername_box").value
-	var container = document.querySelector(".maingamecontents");
-	[...container.children].forEach((e) => e.remove())
+	emptyMainContents()
 	post("/join_game", newname).then((e) => {
 		location.replace("/?name=" + newname)
 	})
 }
 function ready() {
-	var container = document.querySelector(".maingamecontents");
-	[...container.children].forEach((e) => e.remove())
+	emptyMainContents()
 	post("/ready", playername)
 }
 /**
@@ -524,4 +565,15 @@ function clickCard(elm) {
 			e.dataset.contents = contents
 		}
 	}
+	var hasEmptySlots = document.querySelector(`[data-slot^='P'][data-contents='']`) != null
+	var btn = document.querySelector(`[onclick="submitThePlan()"]`)
+	if (hasEmptySlots) btn.classList.add("disabled")
+	else btn.classList.remove("disabled")
+}
+function submitThePlan() {
+	var hasEmptySlots = document.querySelector(`[data-slot^='P'][data-contents='']`) != null
+	if (hasEmptySlots) return
+	var plan = [...document.querySelectorAll("[data-slot^='P']")].map((v) => v.dataset.contents).map((v) => Number(v)).map((v) => CARDS[v].name)
+	emptyMainContents()
+	post("/submit_plan", `${playername}\n${plan.join("\n")}`)
 }

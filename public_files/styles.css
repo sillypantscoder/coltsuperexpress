@@ -10,6 +10,7 @@ body {
 }
 #scene, #game {
 	flex-grow: 1;
+	height: 50%;
 }
 #scene {
 	position: relative;
@@ -157,13 +158,37 @@ body {
 	border-top-right-radius: 1em;
 	margin: 1em;
 	margin-bottom: 0;
-	padding: 1em;
+	position: relative;
+}
+.playerlist > div, .playerlist .user-color {
+	border-top-left-radius: 1em;
+	border-top-right-radius: 1em;
+}
+.playerlist .user-name {
+	padding: 0.5em 1em;
+}
+.playerlist .user-color {
+	height: 1.5em;
+}
+.playerlist .user-annotation {
+	position: absolute;
+	top: -1em;
+	left: calc(50% - 1em);
+	box-sizing: border-box;
+	width: 2em;
+	height: 2em;
+	border-radius: 1em;
+	background: lime;
+	border: 2px solid black;
 }
 
 .giantbtn {
 	background: blue;
 	color: white;
 	padding: 1em;
+}
+.giantbtn.disabled {
+	background: gray;
 }
 
 .card {

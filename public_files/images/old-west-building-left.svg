@@ -1,0 +1,169 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+ <title>Old West building</title>
+ <defs>
+  <linearGradient y2="1" x2="0" y1="0" x1="0" id="svg_9">
+   <stop offset="0" stop-opacity="0.99219" stop-color="#ce8542"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#b25803"/>
+  </linearGradient>
+  <linearGradient y2="1" x2="0" y1="0" x1="0" id="svg_36">
+   <stop offset="0" stop-color="#7f3f00"/>
+   <stop offset="0.06641" stop-opacity="0.99219" stop-color="#ad6726"/>
+   <stop offset="0.13672" stop-opacity="0.98828" stop-color="#ad580d"/>
+   <stop offset="0.23047" stop-opacity="0.99219" stop-color="#ad6726"/>
+   <stop offset="0.35156" stop-opacity="0.98438" stop-color="#ad580d"/>
+   <stop offset="0.41797" stop-opacity="0.99219" stop-color="#8e4e12"/>
+   <stop offset="0.47266" stop-opacity="0.98828" stop-color="#b7702d"/>
+   <stop offset="0.55469" stop-opacity="0.98828" stop-color="#ad580d"/>
+   <stop offset="0.66797" stop-opacity="0.98828" stop-color="#b7702d"/>
+   <stop offset="0.80469" stop-opacity="0.99609" stop-color="#7f3f00"/>
+   <stop offset="0.87891" stop-opacity="0.99219" stop-color="#aa5c12"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#7f3f00"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+  </linearGradient>
+  <linearGradient y2="0" x2="1" y1="0" x1="0" id="svg_39">
+   <stop offset="0" stop-color="#7f3f00"/>
+   <stop offset="0.06641" stop-opacity="0.99219" stop-color="#ad6726"/>
+   <stop offset="0.13672" stop-opacity="0.98828" stop-color="#ad580d"/>
+   <stop offset="0.23047" stop-opacity="0.99219" stop-color="#ad6726"/>
+   <stop offset="0.35156" stop-opacity="0.98438" stop-color="#ad580d"/>
+   <stop offset="0.41797" stop-opacity="0.99219" stop-color="#8e4e12"/>
+   <stop offset="0.47266" stop-opacity="0.98828" stop-color="#b7702d"/>
+   <stop offset="0.55469" stop-opacity="0.98828" stop-color="#ad580d"/>
+   <stop offset="0.66797" stop-opacity="0.98828" stop-color="#b7702d"/>
+   <stop offset="0.80469" stop-opacity="0.99609" stop-color="#7f3f00"/>
+   <stop offset="0.87891" stop-opacity="0.99219" stop-color="#aa5c12"/>
+   <stop offset="1" stop-opacity="0.99609" stop-color="#7f3f00"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+  </linearGradient>
+  <linearGradient y2="1" x2="1" y1="0" x1="0" id="svg_59">
+   <stop offset="0" stop-opacity="0.99219" stop-color="#0b70a3"/>
+   <stop offset="0.41406" stop-opacity="0.99609" stop-color="#379acc"/>
+   <stop offset="1" stop-color="#005fbf"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+   <stop offset="NaN" stop-opacity="0" stop-color="0"/>
+  </linearGradient>
+ </defs>
+ <g id="Layer_1">
+  <title>Layer 1</title>
+  <path id="svg_5" d="m82,364l0,-170l258,0l0,175l-258,-5z" opacity="NaN" stroke="#000" fill="url(#svg_36)"/>
+  <path id="svg_8" d="m384,202l-348,-1l47,-88l248,-3l53,92z" opacity="NaN" stroke="#000" fill="url(#svg_9)"/>
+  <rect id="svg_38" height="96" width="51" y="252" x="190" stroke="#000" fill="url(#svg_39)"/>
+  <path id="svg_7" d="m96,368l1,-69l224,2l3,64l-8,0l-1,-53l-209,-2l-1,61l-9,-3z" opacity="NaN" stroke="#000" fill="#cc6d14"/>
+  <path id="svg_3" d="m84,373l1,-25l248,0l5,29l-254,-4z" opacity="NaN" stroke="#000" fill="#b25b0a"/>
+  <path id="svg_2" d="m121,382l2,-15l167,0l3,13" opacity="NaN" stroke="#000" fill="#bf5f00"/>
+  <rect id="svg_40" height="55" width="63" y="232" x="110" stroke="#000" fill="url(#svg_59)"/>
+  <rect id="svg_60" height="55" width="63" y="231" x="260" stroke="#000" fill="url(#svg_59)"/>
+ </g>
+</svg>
