@@ -11,6 +11,7 @@ body {
 #scene, #game {
 	flex-grow: 1;
 	height: 50%;
+	overflow: auto;
 }
 #scene {
 	position: relative;
@@ -166,6 +167,11 @@ body {
 }
 .playerlist .user-name {
 	padding: 0.5em 1em;
+	text-align: center;
+	height: calc(100% - 2.5em);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 .playerlist .user-color {
 	height: 1.5em;
@@ -186,6 +192,7 @@ body {
 	background: blue;
 	color: white;
 	padding: 1em;
+	display: inline-block;
 }
 .giantbtn.disabled {
 	background: gray;

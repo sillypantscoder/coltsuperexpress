@@ -120,7 +120,7 @@ const random = {
 
 /**
  * A player
- * @typedef {{ name: string, ready: boolean }} Player
+ * @typedef {{ name: string, ready: boolean, planSize: number }} Player
  */
 
 /**
@@ -130,7 +130,7 @@ const random = {
 
 /**
  * The game's status
- * @typedef {{ status: "joining" | "schemin" | "executing", players: Player[], train: Figure[][], lastcard: string[] }} GameStatus
+ * @typedef {{ status: "joining" | "schemin" | "executing", players: Player[], train: Figure[][], lastcard: string[], playeroffset: number }} GameStatus
  */
 
 /** @type {{name: string, img: string}[]} */
@@ -388,16 +388,24 @@ fill='#${COLORS[i + 1]}' /></svg>`
 	}
 }
 /**
+ * Shift the player list with the offset.
+ * @param {Player[]} players The list of players.
+ * @returns {Player[]} The updated player list
+ */
+function shiftPlayerList(players, offset) {
+	var n = [...players]
+	for (var i = 0; i < offset; i++) {
+		n.push(n.shift())
+	}
+	return n
+}
+/**
  * Update the bottom half of the screen with the game's status.
  * @param {GameStatus} gameStatus The game's current status.
- * @returns {boolean} Whether we need to continue updating the data.
  */
 function updateData(gameStatus) {
-	console.log("start")
-	console.log(gameStatus.players.map((v) => v.name))
 	// Add the player elements (if needed)
 	addRealPlayerElements(gameStatus.players)
-	console.log(gameStatus.players.map((v) => v.name))
 	// Update the bottom panel
 	var container = document.querySelector(".maingamecontents")
 	if (gameStatus.status == "joining") {
@@ -450,7 +458,7 @@ function updateData(gameStatus) {
 					container.children[2].innerHTML += `<div class="card" data-slot="C${i}" data-contents="${i}" onclick="clickCard(event.target)"></div>`
 				}
 				container.appendChild(document.createElement("div"))
-				container.children[3].innerHTML = `<div class="giantbtn disabled" onclick="submitThePlan()">Submit The Plan</div>`
+				container.children[3].innerHTML = `<div class="giantbtn" style="background: orange;" onclick="for (var i = 0; i < 3; i++) random.choice([...document.querySelectorAll('[data-slot^=\\'C\\' ]:not([data-contents=\\'\\' ])')]).click()">Random</div><div class="giantbtn disabled" onclick="submitThePlan()">Submit The Plan</div>`
 			}
 		}
 	} else if (gameStatus.status == "executing") {
@@ -471,19 +479,21 @@ function updateData(gameStatus) {
 			container.children[2].innerHTML = `<div class="giantbtn" onclick="ready()">Next</div>`
 		}
 	}
-	console.log(gameStatus.players.map((v) => v.name));
 	// Player list
 	[...document.querySelector(".playerlist").children].forEach((e) => e.remove())
 	for (var i = 0; i < gameStatus.players.length; i++) {
-		var player = gameStatus.players[i]
+		var ri = i + gameStatus.playeroffset
+		while (ri >= gameStatus.players.length) ri -= gameStatus.players.length
+		var player = gameStatus.players[ri]
 		var e = document.createElement("div")
 		document.querySelector(".playerlist").appendChild(e)
-		e.innerHTML = `<div></div><div class="user-color"></div><div class="user-name"></div>`
+		e.innerHTML = `<div></div><div class="user-color"></div><div class="user-name"><div></div></div>`
 		if (player.ready) e.children[0].classList.add("user-annotation")
-		e.children[1].setAttribute("style", `background: #${COLORS[i + 1]};`)
-		e.children[2].innerText = player.name
+		e.children[1].setAttribute("style", `background: #${COLORS[ri + 1]};`)
+		e.children[2].children[0].innerText = player.name
+		if (player.name == playername) e.children[2].appendChild(document.createElement("div")).innerHTML = `<b>(You)</b>`
+		if (gameStatus.status == "executing") e.children[2].appendChild(document.createElement("div")).innerHTML = `Cards left: <b>${player.planSize}</b>`
 	}
-	console.log(gameStatus.players.map((v) => v.name));
 	// Go through the train to find all the figures
 	/** @type {{figure: Figure, figElm: HTMLDivElement}[]} */
 	var figures = []
@@ -496,6 +506,13 @@ function updateData(gameStatus) {
 		}
 	}
 	updatePlayerPositions(figures)
+	for (var i = 0; i < gameStatus.players.length; i++) {
+		var fig = figures.findIndex((v) => v.figure.player == gameStatus.players[i].name)
+		if (fig == -1) {
+			var e = document.querySelector(`div[data-playername='${gameStatus.players[i].name}']`)
+			e.style.top = "1000px"
+		}
+	}
 }
 async function updateDataLoop() {
 	while (true) {

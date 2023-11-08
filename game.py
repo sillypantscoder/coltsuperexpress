@@ -100,12 +100,19 @@ class Player:
 			self.plan.append(card(self.figure, srcGame))
 		self.ready = True
 
+def shiftPlayerList(oldList: list[Player], offset: int) -> list[Player]:
+	newList = [*oldList] # not in place
+	for _ in range(offset):
+		newList.append(newList.pop(0))
+	return newList
+
 class Game:
 	def __init__(self):
 		self.status: typing.Literal["joining", "schemin", "executing"] = "joining"
 		self.players: list[Player] = []
 		self.train: list[list[Figure]] = []
 		self.lastcard: tuple[Card, str] | None = None
+		self.playerOffset: int = 0
 	def addPlayer(self, player: Player):
 		self.players.append(player)
 		self.initTrain()
@@ -210,7 +217,8 @@ class Game:
 			"status": self.status,
 			"players": [{
 				"name": p.name,
-				"ready": p.ready
+				"ready": p.ready,
+				"planSize": len(p.plan)
 			} for p in self.players],
 			"train": [[{
 				"player": f.player.name if f.player != None else None,
@@ -218,7 +226,8 @@ class Game:
 				"height": f.height,
 				"stunned": f.stunned
 			} for f in car] for car in self.train],
-			"lastcard": [self.lastcard[0].getName(), self.lastcard[1]] if self.lastcard != None else None
+			"lastcard": [self.lastcard[0].getName(), self.lastcard[1]] if self.lastcard != None else None,
+			"playeroffset": self.playerOffset
 		}
 	def readyPlayer(self, name: str):
 		for p in self.players:
@@ -262,12 +271,13 @@ class Game:
 		# Find the card
 		maxcards = -1
 		maxcplayer = self.players[0]
-		for p in self.players:
+		for p in shiftPlayerList(self.players, self.playerOffset):
 			if len(p.plan) > maxcards:
 				maxcards = len(p.plan)
 				maxcplayer = p
 		if maxcards == 0:
 			# We are out of cards!
+			self.playerOffset += 1
 			self.startRound()
 		else:
 			self.lastcard = (maxcplayer.plan.pop(0), maxcplayer.name)
