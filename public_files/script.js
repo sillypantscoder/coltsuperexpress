@@ -410,12 +410,13 @@ function updateData(gameStatus) {
 	addRealPlayerElements(gameStatus.players)
 	// Update the bottom panel
 	var container = document.querySelector(".maingamecontents")
+	var playerData = gameStatus.players.find((val) => val.name == playername)
 	if (gameStatus.status == "joining") {
-		if (gameStatus.players.some((val) => val.name == playername)) {
+		if (playerData != undefined) {
 			// We have already joined
 			if (container.dataset.screen != "wait_to_start") {
 				container.dataset.screen = "wait_to_start"
-				if (gameStatus.players.find((val) => val.name == playername).ready) {
+				if (playerData.ready) {
 					container.appendChild(document.createElement("div"))
 					container.children[0].innerHTML = `<div class="giantbtn" style="background: red;" onclick="ready()">Not Ready</div>`
 				} else {
@@ -436,9 +437,31 @@ function updateData(gameStatus) {
 				container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
 			}
 		}
+	} else if (playerData == undefined) {
+		// We are not in the game...
+		// but the game has started...
+		// SPECTATOR MODE!
+		container.dataset.screen = "schemin"
+		container.innerText = ""
+		container.appendChild(document.createElement("div"))
+		container.children[0].innerHTML = `<h3>Wait for everyone to make their plan!</h3>`
+		// Also show what cards are being executed
+		if (gameStatus.status == "executing") {
+			// Find out what cards are being played and by who
+			var cardno = CARDS.map((v) => v.name).indexOf(gameStatus.lastcard[0])
+			var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(gameStatus.lastcard[1]) + 1]
+			// show the player name and color
+			container.appendChild(document.createElement("div"))
+			container.children[1].innerHTML = `<b><div style="width: 1em; height: 1em; border: 0.1em solid black; border-radius: 50%; background: #${color}; display: inline-block;"></div> ${gameStatus.lastcard[1]}</b>`
+			// show the card
+			container.appendChild(document.createElement("div"))
+			container.children[2].innerHTML = `<div class="card" data-contents="${cardno}"></div>`
+			// things are happening!
+			updateScene(gameStatus)
+		}
 	} else if (gameStatus.status == "schemin") {
 		// hehehehehe scheming
-		if (gameStatus.players.find((val) => val.name == playername).ready) {
+		if (playerData.ready) {
 			container.dataset.screen = "schemin_done"
 			container.appendChild(document.createElement("div"))
 			container.children[0].innerHTML = `<h3>Wait for everyone else to make their plan!</h3>`
@@ -466,7 +489,7 @@ function updateData(gameStatus) {
 	} else if (gameStatus.status == "executing") {
 		// aaaaaaa!
 		updateScene(gameStatus) // things are happening!
-		if (gameStatus.players.find((val) => val.name == playername).ready) {
+		if (playerData.ready) {
 			container.appendChild(document.createElement("div"))
 			container.children[0].innerHTML = `<h3>Wait for everyone else to finish!</h3>`
 		} else {
