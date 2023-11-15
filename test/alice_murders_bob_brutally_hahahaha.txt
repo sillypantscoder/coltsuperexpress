@@ -4,7 +4,7 @@ addplayer alice
 ready bob
 ready alice
 # alice is cheating!
-> submitplan alice shoot shoot shoot
+submitplan alice shoot shoot shoot
 # bob is also cheating, but not as well because bob is going first. oops!
 submitplan bob revenge revenge revenge
 # ok, the server should be executing the plan now!
@@ -14,7 +14,10 @@ ready bob
 # alice shoots bob
 ready alice
 ready bob
-# Feature request: assertstate game.status == "..." or something
+assertstate schemin status
+# note: `assertstate` syntax is: assertstate [target value] [path]
+# for instance, to check that a player is ready:
+# 		assertstate true players 0 ready
 # bob revenge's alice
 ready alice
 ready bob

@@ -1,6 +1,8 @@
-from getch import getch
 import typing
+import json
+import re # :(
 import requests
+from getch import getch
 
 RESET = "\u001b[0m"
 RED = "\u001b[31m"
@@ -14,35 +16,65 @@ CURSOR_LEFT  = lambda n: f"\u001b[{n}D"
 
 DELETE_LINE = "\r\u001b[2K"
 
-def call_addplayer(args: list[str]):
-	requests.post("http://0.0.0.0:8080/join_game", data=args[0].encode("UTF-8"), timeout=10)
-
-def call_ready(args: list[str]):
-	requests.post("http://0.0.0.0:8080/ready", data=args[0].encode("UTF-8"), timeout=10)
-
-def call_submitplan(args: list[str]):
-	requests.post("http://0.0.0.0:8080/submit_plan", data='\n'.join(args).encode("UTF-8"), timeout=10)
+def call_assertstate(args: list[str]):
+	status: dict[str, typing.Any] | list[typing.Any] | str | int = json.loads(requests.get("http://0.0.0.0:8080/status", timeout=10).text)
+	for arg in args[1:]:
+		if isinstance(status, dict):
+			try:
+				status = status[arg]
+			except (ValueError, KeyError):
+				print(f"ASSERT STATE FAIL: cannot get {repr(arg)} from {repr(status)}")
+				return
+		elif isinstance(status, list):
+			try:
+				status = status[int(arg)]
+			except (ValueError, KeyError):
+				print(f"ASSERT STATE FAIL: cannot get index {repr(arg)} from {repr(status)}")
+				return
+		else:
+			print(f"ASSERT STATE FAIL: cannot get name {repr(arg)} from {repr(status)}")
+			return
+	valid = False
+	if isinstance(status, str):
+		valid = status == args[0]
+	if isinstance(status, int):
+		try:
+			valid = status == int(args[0])
+		except ValueError:
+			valid = False
+	if isinstance(status, bool):
+		if status:
+			valid = args[0] == "true"
+		else:
+			valid = args[0] == "false"
+	if not valid:
+		print(f"ASSERT STATE FAIL: {repr(status)} is not equal to {repr(args[0])}")
 
 commands: list[
 		# name and func
 	tuple[str, typing.Callable[[ list[str] ], typing.Any],
 		# syntax
 		list[
-			tuple[str, list[str] | type[int] | type[str]]
+			tuple[str, list[str] | type[int] | type[str]] | typing.Literal["..."]
 		]
 	]
 ] = [
-	("addplayer", call_addplayer, [
+	("addplayer", lambda args : requests.post("http://0.0.0.0:8080/join_game", data=args[0].encode("UTF-8"), timeout=10), [
 		("playername", str)
 	]),
-	("ready", call_ready, [
+	("ready", lambda args : requests.post("http://0.0.0.0:8080/ready", data=args[0].encode("UTF-8"), timeout=10), [
 		("playername", str)
 	]),
-	("submitplan", call_submitplan, [
+	("submitplan", lambda args : requests.post("http://0.0.0.0:8080/submit_plan", data='\n'.join(args).encode("UTF-8"), timeout=10), [
 		("playername", str),
 		("card1", ["forwards", "turn", "changeLevel", "shoot", "revenge"]),
 		("card2", ["forwards", "turn", "changeLevel", "shoot", "revenge"]),
 		("card3", ["forwards", "turn", "changeLevel", "shoot", "revenge"])
+	]),
+	("assertstate", call_assertstate, [
+		("targetvalue", str),
+		("path", str),
+		"..."
 	])
 	# ("test", call_addplayer, [
 	# 	("testy1", ["a", "bbbbbbb", "c"]),
@@ -54,7 +86,7 @@ commands: list[
 def get_command() -> list[str]:
 	currentS: str = ""
 	selectedComplete: int = 0
-	def getSyntax(cmdname: str) -> "list[tuple[str, list[str] | type[int] | type[str]]]":
+	def getSyntax(cmdname: str) -> "list[tuple[str, list[str] | type[int] | type[str]] | typing.Literal['...']]":
 		for cmd in commands:
 			if cmdname == cmd[0]:
 				return cmd[2]
@@ -68,21 +100,29 @@ def get_command() -> list[str]:
 		for item in syntax:
 			if isinstance(item[1], list):
 				result.append(f"<{item[0]}>")
+			elif isinstance(item, str):
+				result.append(f"[...{getSyntax(s[0])[-2][0]}]")
 			elif isinstance(item[1](), str):
 				result.append(f"<{item[0]}: string>")
 			elif isinstance(item[1](), int):
 				result.append(f"<{item[0]}: number>")
-		if len(result) == 0: return ""
+		if len(result) == 0:
+			if getSyntax(s[0])[-1] == "...":
+				result.append(f"[...{getSyntax(s[0])[-2][0]}]")
+			else: return ""
 		padding = " " * (len(' '.join(s)) - (len(s[-1]) - 2))
 		firstIPad = YELLOW + result[0].ljust(max(len(result[0]), len(s[-1])) + 1) + RESET
 		return padding + firstIPad + " ".join(result[1:])
 	def validate(cmdname: str, itemno: int, item: str):
 		if itemno - 1 < 0: return cmdname in [c[0] for c in commands]
 		syntax = getSyntax(cmdname)
-		if itemno - 1 >= len(syntax): return False
+		if itemno - 1 >= len(syntax):
+			return syntax[-1] == "..."
 		argument = syntax[itemno - 1][1]
 		if isinstance(argument, list):
 			return item in argument
+		elif isinstance(argument, str):
+			return True
 		elif isinstance(argument(), str):
 			return True
 		elif isinstance(argument(), int):
@@ -94,7 +134,7 @@ def get_command() -> list[str]:
 		results: list[str] = []
 		s = currentS.split(" ")
 		if len(s) == 1: return [c[0] for c in commands]
-		# print(getSyntax(s[0]), len(s), "\n", repr(s), "\n", sep="")
+		if len(s) - 2 >= len(getSyntax(s[0])): return []
 		syntax = getSyntax(s[0])[len(s) - 2][1]
 		if isinstance(syntax, list):
 			results.extend(syntax)
@@ -182,7 +222,7 @@ def get_command() -> list[str]:
 
 def read_cmd_from_file():
 	f = open("alice_murders_bob_brutally_hahahaha.txt", "r")
-	t = f.read().split("\n")
+	t = re.sub(r"[ \t]*#.*\n", "", f.read()).split("\n")
 	f.close()
 	nextLine = 0
 	for lineno in range(len(t)):
