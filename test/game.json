@@ -1,0 +1,15 @@
+{
+	"status": "joining",
+	"players": [
+		{"name": "asdf", "ready": false, "planSize": 0}
+	],
+	"train": [
+		[
+		], [
+			{"player": "asdf", "height": true, "direction": "right", "stunned": false}
+		], [
+		]
+	],
+	"lastcard": null,
+	"playeroffset": 0
+}

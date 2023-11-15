@@ -1,0 +1,5 @@
+Add spectator mode
+Add check mark
+Train falls off at the end of a round
+Death
+Winning!!!

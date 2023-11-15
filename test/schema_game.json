@@ -1,0 +1,88 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://jason.harromans.com/coltsuperexpress/game.schema.json",
+	"title": "Game",
+	"description": "A game",
+	"type": "object",
+	"properties": {
+		"status": {
+			"description": "The phase the game is currently in",
+			"type": "string",
+			"enum": ["joining", "schemin", "executing"]
+		},
+		"players": {
+			"description": "The list of players",
+			"type": "array",
+			"items": { "$ref": "#/$defs/player" }
+		},
+		"train": {
+			"description": "The train holding all the figures",
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": { "$ref": "#/$defs/figure" }
+			}
+		},
+		"lastcard": {
+			"description": "The last card that was played",
+			"anyOf": [
+				{
+					"type": "null"
+				},
+				{
+					"type": "array",
+					"items": { "type": "string" },
+					"minItems": 2,
+					"maxItems": 2
+				}
+			]
+		},
+		"playeroffset": {
+			"description": "The offset of the player list",
+			"type": "integer"
+		}
+	},
+	"$defs": {
+		"player": {
+			"description": "A player in the game",
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "The player's name",
+					"type": "string"
+				},
+				"ready": {
+					"description": "Whether the player is 'ready'.",
+					"type": "boolean"
+				},
+				"planSize": {
+					"description": "The number of cards the player has left in their plan",
+					"type": "integer"
+				}
+			}
+		},
+		"figure": {
+			"description": "A figure on the train",
+			"type": "object",
+			"properties": {
+				"player": {
+					"description": "The name of the player this figure is for",
+					"type": "string"
+				},
+				"height": {
+					"description": "Whether this figure is on the top of the train",
+					"type": "boolean"
+				},
+				"direction": {
+					"description": "The direction this figure is facing",
+					"type": "string",
+					"enum": ["right", "left"]
+				},
+				"stunned": {
+					"description": "Whether this figure has been stunned by a gun shot",
+					"type": "boolean"
+				}
+			}
+		}
+	}
+}
