@@ -166,33 +166,43 @@ class Game:
 				fig.direction = 'left'
 			self.train.append([fig])
 		self.train.append([]) # engine
-	def shoot(self, figure: Figure):
-		carNo = -1
-		figNo = -1
-		direction = -1 if figure.direction == 'left' else 1
+	def findFigure(self, figure: Figure) -> tuple[int, int] | None:
 		for carno, car in enumerate(self.train):
 			for figno, fig in enumerate(car):
 				if fig == figure:
-					carNo = carno
-					figNo = figno
+					return (carno, figno)
+		return None
+	def shoot(self, figure: Figure):
+		# figure out where we are
+		figLoc = self.findFigure(figure)
+		if not figLoc:
+			# aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+			# he died :(
+			return
+		# find the next person (that's standing up) in the direction and on the same level...
+		# and if we find them, stun them and push them back.
+		hitFigure = self.trace(*figLoc, -1 if figure.direction == 'left' else 1, figure.height)
+		if hitFigure != None:
+			hitFigure.stunned = True
+			self.moveFigure(hitFigure, figure.direction)
+	def trace(self, carNo: int, figNo: int, direction: typing.Literal[-1, 1], height: typing.Literal[True, False, "anywhere"]) -> Figure | None:
 		while True:
+			# Find the next figure in the car, or the next car if needed
 			figNo += direction
 			if figNo >= len(self.train[carNo]) or figNo < 0: # If we have traced outside of this car...
 				carNo += direction # move to the next car
 				if carNo >= len(self.train) or carNo < 0: # Check if we have exited the train
-					return
+					return None
 				figNo = 0 # Reset the figure number
 				if direction == -1: figNo = len(self.train[carNo]) - 1 # If we are tracing left, the figure number is the end of the car
 				if figNo >= len(self.train[carNo]) or figNo < 0: continue # If we are STILL out of bounds, restart so we can check again.
 				# This will only happen if there is a car with no one in it.
 			# Check this figure
 			target = self.train[carNo][figNo]
-			if target.height == figure.height:
-				if target.stunned == False:
+			if target.height == height or height == "anywhere":
+				if target.stunned == False or height == "anywhere": # Train can go to players that are stunned
 					# aaa!
-					target.stunned = True
-					self.moveFigure(target, figure.direction)
-					return
+					return target
 	def moveFigure(self, figure: Figure, direction: typing.Literal["left", "right"]):
 		new_car: list[Figure] | None = None
 		for carno, car in enumerate(self.train):
@@ -277,11 +287,17 @@ class Game:
 				maxcplayer = p
 		if maxcards == 0:
 			# We are out of cards!
-			self.playerOffset += 1
-			self.startRound()
+			self.endRound()
 		else:
 			self.lastcard = (maxcplayer.plan.pop(0), maxcplayer.name)
 			self.lastcard[0].execute()
+	def endRound(self):
+		self.train.pop(0)
+		# If the game is over
+		# --- todo ---
+		# If there are still players left:
+		self.playerOffset += 1
+		self.startRound()
 
 if __name__ == "__main__":
 	# some testing

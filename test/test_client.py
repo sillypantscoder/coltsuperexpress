@@ -1,6 +1,5 @@
 import typing
 import json
-import re # :(
 import requests
 from getch import getch
 
