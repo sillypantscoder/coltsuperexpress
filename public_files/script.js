@@ -402,6 +402,24 @@ function shiftPlayerList(players, offset) {
 	return n
 }
 /**
+ * Get a list of the players which are currently alive.
+ * @param {Figure[][]} train The train to check
+ * @returns {string[]} The list of player names
+ */
+function getAlivePlayers(train) {
+	/** @type {string[]} */
+	var players = []
+	for (var car = 0; car < train.length; car++) {
+		for (var fig = 0; fig < train[car].length; fig++) {
+			var name = train[car][fig].player
+			if (! players.includes(name)) {
+				players.push(name)
+			}
+		}
+	}
+	return players
+}
+/**
  * Update the bottom half of the screen with the game's status.
  * @param {GameStatus} gameStatus The game's current status.
  */
@@ -411,6 +429,7 @@ function updateData(gameStatus) {
 	// Update the bottom panel
 	var container = document.querySelector(".maingamecontents")
 	var playerData = gameStatus.players.find((val) => val.name == playername)
+	var alive = getAlivePlayers(gameStatus.train)
 	if (gameStatus.status == "joining") {
 		if (playerData != undefined) {
 			// We have already joined
@@ -461,7 +480,16 @@ function updateData(gameStatus) {
 		}
 	} else if (gameStatus.status == "schemin") {
 		// hehehehehe scheming
-		if (playerData.ready) {
+		if (! alive.includes(playername)) {
+			if (container.dataset.screen != "schemin_dead") {
+				container.dataset.screen = "schemin_dead"
+				container.appendChild(document.createElement("div"))
+				container.children[0].innerHTML = `<h3>You are dead!</h3>`
+				container.appendChild(document.createElement("div"))
+				container.children[1].innerHTML = `<div style="font-size: 0.7em; margin-top: 0.5em;">Dead Dead Dead<br>Dead Dead Dead</div>`
+				post("/ready", playername)
+			}
+		} else if (playerData.ready) {
 			container.dataset.screen = "schemin_done"
 			container.appendChild(document.createElement("div"))
 			container.children[0].innerHTML = `<h3>Wait for everyone else to make their plan!</h3>`
@@ -483,7 +511,11 @@ function updateData(gameStatus) {
 					container.children[2].innerHTML += `<div class="card" data-slot="C${i}" data-contents="${i}" onclick="clickCard(event.target)"></div>`
 				}
 				container.appendChild(document.createElement("div"))
-				container.children[3].innerHTML = `<div class="giantbtn" style="background: orange;" onclick="for (var i = 0; i < 3; i++) random.choice([...document.querySelectorAll('[data-slot^=\\'C\\' ]:not([data-contents=\\'\\' ])')]).click()">Random</div><div class="giantbtn disabled" onclick="submitThePlan()">Submit The Plan</div>`
+				container.children[3].innerHTML = `<div class="giantbtn disabled" onclick="submitThePlan()">Submit The Plan</div>`
+				if (query.bot == "true") {
+					for (var i = 0; i < 3; i++) random.choice([...document.querySelectorAll('[data-slot^=\'C\' ]:not([data-contents=\'\' ])')]).click()
+					submitThePlan()
+				}
 			}
 		}
 	} else if (gameStatus.status == "executing") {
@@ -494,6 +526,10 @@ function updateData(gameStatus) {
 			container.children[0].innerHTML = `<h3>Wait for everyone else to finish!</h3>`
 		} else {
 			container.innerText = ""
+			if (container.dataset.screen != "executing") {
+				container.dataset.screen = "executing"
+				if (query.bot == "true") ready()
+			}
 			var cardno = CARDS.map((v) => v.name).indexOf(gameStatus.lastcard[0])
 			var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(gameStatus.lastcard[1]) + 1]
 			container.appendChild(document.createElement("div"))

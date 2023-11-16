@@ -222,7 +222,7 @@ def get_command() -> list[str]:
 
 def read_cmd_from_file():
 	f = open("alice_murders_bob_brutally_hahahaha.txt", "r")
-	t = re.sub(r"[ \t]*#.*\n", "", f.read()).split("\n")
+	t = f.read().split("\n")
 	f.close()
 	nextLine = 0
 	for lineno in range(len(t)):

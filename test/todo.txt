@@ -1,3 +1,5 @@
 Train falls off at the end of a round
 Death
 Winning!!!
+Fix spaces in names
+Allow players to leave a game

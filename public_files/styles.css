@@ -64,12 +64,15 @@ body {
 
 .train-car {
 	height: 12vh;
-	width: auto;
+	width: /* auto */ calc(21 * calc(12vh / 10));
 	position: relative;
 }
 .train-car > img {
 	height: 100%;
 	width: auto;
+}
+.train-car.train-car-locomotive {
+	width: calc(25 * calc(12vh / 10));
 }
 
 .car-contents {

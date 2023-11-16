@@ -16,6 +16,7 @@ ready alice
 ready bob
 assertstate schemin status
 # note: `assertstate` syntax is: assertstate [target value] [path]
+# the path tells it how to go through the "status" data
 # for instance, to check that a player is ready:
 # 		assertstate true players 0 ready
 # bob revenge's alice
@@ -28,6 +29,7 @@ ready bob
 ready alice
 ready bob
 # alice shoots bob
+# bob is sad
 ready alice
 ready bob
 # ... next round begins... except that's a bug, because alice should have just won.
