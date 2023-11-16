@@ -285,19 +285,37 @@ class Game:
 			if len(p.plan) > maxcards:
 				maxcards = len(p.plan)
 				maxcplayer = p
-		if maxcards == 0:
+		if maxcards == 0 or self.checkWhetherTheGameShouldEndRightNow():
 			# We are out of cards!
 			self.endRound()
 		else:
 			self.lastcard = (maxcplayer.plan.pop(0), maxcplayer.name)
 			self.lastcard[0].execute()
+	def getActiveFigures(self): return [fig for car in self.train for fig in car]
+	def checkWhetherTheGameShouldEndRightNow(self): return len(self.getActiveFigures()) <= 1
 	def endRound(self):
+		if self.checkWhetherTheGameShouldEndRightNow():
+			self.finishGame()
+			return
 		self.train.pop(0)
-		# If the game is over
-		# --- todo ---
+		if self.checkWhetherTheGameShouldEndRightNow():
+			self.finishGame()
+			return
 		# If there are still players left:
 		self.playerOffset += 1
 		self.startRound()
+	def finishGame(self):
+		remaining: list[Figure] = self.getActiveFigures()
+		if len(remaining) > 0:
+			remainingFig = remaining[0]
+			possiblePlayer: Player | None = remainingFig.player
+			if possiblePlayer == None:
+				print("ONLY SOME RANDOM NPC THAT NO ONE CARES ABOUT SURVIVED THE TRAIN TRIP")
+			else:
+				print(f"{possiblePlayer.name} IS THE ULTIMATE WINNER OF EVERYTHING")
+				print("(HAHAHAHAHA)")
+		else:
+			print("NO ONE SURVIVED THE TRAIN TRIP 🪦")
 
 if __name__ == "__main__":
 	# some testing

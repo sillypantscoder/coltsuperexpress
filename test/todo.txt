@@ -1,7 +1,16 @@
-Winning!!!
+Test out winning!!! (!!!)
 Fix spaces in names
 Allow players to leave a game
 
 Tests to add:
 - When shooting, don't hit people that are laying down
 - When shooting, don't hit people on the roof (if you're on the ground floor, and vice-versa)
+- Death by shooting off the train
+- Death by deleted train car
+- Winning and game ending scenarios:
+  - nobody lives
+  - one person wins
+  - one person wins due to being on the last train
+  - winner walks off the end of the train (in their plan during the last round)
+    - SHOULD NOT HAPPEN
+  - last N people are on the last train car and all die
