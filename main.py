@@ -75,7 +75,7 @@ def get(path: str, query: URLQuery) -> HttpResponse:
 			"headers": {
 				"Content-Type": "application/json"
 			},
-			"content": json.dumps(game.toDict())
+			"content": json.dumps(game.toDict(), indent='\t')
 		}
 	elif path.startswith("/card/"):
 		data = path.split("/")[2:]
