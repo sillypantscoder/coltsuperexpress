@@ -25,13 +25,16 @@ def call_assertstate(args: list[str]) -> tuple[bool, str]:
 		if isinstance(status, dict):
 			try:
 				status = status[arg]
-			except (ValueError, KeyError):
+			except (ValueError, KeyError, IndexError):
 				return (False, f"ASSERT STATE FAIL: cannot get {repr(arg)} from {repr(status)}")
 		elif isinstance(status, list):
-			try:
-				status = status[int(arg)]
-			except (ValueError, KeyError):
-				return (False, f"ASSERT STATE FAIL: cannot get index {repr(arg)} from {repr(status)}")
+			if arg == ".LEN":
+				status = len(status)
+			else:
+				try:
+					status = status[int(arg)]
+				except (ValueError, KeyError, IndexError):
+					return (False, f"ASSERT STATE FAIL: cannot get index {repr(arg)} from {repr(status)}")
 		else:
 			return (False, f"ASSERT STATE FAIL: cannot get name {repr(arg)} from {repr(status)}")
 	valid = False

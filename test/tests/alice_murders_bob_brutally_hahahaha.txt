@@ -8,18 +8,14 @@ submitplan alice shoot shoot shoot
 # bob is also cheating, but not as well because bob is going first. oops!
 submitplan bob revenge revenge revenge
 # ok, the server should be executing the plan now!
+assertstate executing status
 # bob revenge's which does nothing
 ready alice
 ready bob
 # alice shoots bob
 ready alice
 ready bob
-assertstate schemin status
-# note: `assertstate` syntax is: assertstate [target value] [path]
-# the path tells it how to go through the "status" data
-# for instance, to check that a player is ready:
-# 		assertstate true players 0 ready
-# bob revenge's alice
+# bob revenges alice
 ready alice
 ready bob
 # alice gets back up
@@ -29,7 +25,9 @@ ready bob
 ready alice
 ready bob
 # alice shoots bob
+# bob has died!
 # bob is sad
+assertstate 0 train 0 .LEN
 ready alice
 ready bob
 # ... next round begins... except that's a bug, because alice should have just won.

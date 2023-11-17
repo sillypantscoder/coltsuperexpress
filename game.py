@@ -7,7 +7,7 @@ class Card:
 	def execute(self):
 		pass
 	def getName(self):
-		return ""
+		return "wait"
 
 class Figure:
 	def __init__(self, player: "Player | None" = None):
@@ -82,7 +82,7 @@ class RevengeCard(Card):
 	def getName(self):
 		return "revenge"
 
-card_types: "list[type[Card]]" = [MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard]
+card_types: "list[type[Card]]" = [Card, MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard]
 
 class Player:
 	def __init__(self, name: str):

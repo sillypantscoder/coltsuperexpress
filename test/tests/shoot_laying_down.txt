@@ -1,0 +1,53 @@
+# Test for this file:
+# When shooting, don't hit people that are laying down.
+# 1. Add the players & start the game
+addplayer alice
+addplayer bob
+addplayer crazyman
+ready alice
+ready bob
+ready crazyman
+assertstate schemin status
+# 2. Make the plans
+submitplan alice wait shoot wait
+submitplan bob forwards wait wait
+submitplan crazyman wait shoot wait
+# 3. Execute!
+assertstate executing status
+# a. Alice (on the left) does nothing.
+ready alice
+ready bob
+ready crazyman
+# b. Bob (in the middle, facing left) moves forwards into the same car Alice is in.
+assertstate 2 train 1 .LEN
+assertstate 0 train 2 .LEN
+ready alice
+ready bob
+ready crazyman
+# c. The crazy man (on the right, facing left) does nothing.
+ready alice
+ready bob
+ready crazyman
+# d. Alice shoots Bob, which causes Bob to be stunned and in the middle again.
+assertstate 1 train 1 .LEN
+assertstate 1 train 2 .LEN
+ready alice
+ready bob
+ready crazyman
+# e. Bob does nothing, and continues lying down in the middle.
+ready alice
+ready bob
+ready crazyman
+# f. The crazy man shoots. The shot should go over Bob (who is lying down in the middle) and hit Alice (who is standing up on the left).
+assertstate 1 train 3 .LEN
+assertstate false train 3 0 stunned
+# (this checks that crazyman is still there and standing up)
+assertstate 1 train 2 .LEN
+assertstate true train 2 0 stunned
+# (this checks that Bob is still in the middle and stunned)
+# (if the shot hit Bob instead, line 45 will fail)
+assertstate 0 train 1 .LEN
+# (this checks that Alice is no longer in the car directly to the left of Bob)
+assertstate 1 train 0 .LEN
+assertstate true train 0 0 stunned
+# (this checks that Alice is in the very first train car, and is stunned)

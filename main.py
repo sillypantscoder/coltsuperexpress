@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import typing
 import os
 import json
+import sys
 from game import Game, Player, MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard
 
 hostName = "0.0.0.0"
@@ -172,6 +173,7 @@ if __name__ == "__main__":
 	webServer = HTTPServer((hostName, serverPort), MyServer)
 	webServer.timeout = 1
 	print(f"Server started http://{hostName}:{serverPort}")
+	sys.stdout.flush()
 	while running:
 		try:
 			webServer.handle_request()
