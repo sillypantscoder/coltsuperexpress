@@ -251,6 +251,13 @@ class Game:
 					allready = False
 			if allready:
 				self.startRound()
+		elif self.status == "schemin":
+			allready = True
+			for p in self.players:
+				if not p.ready:
+					allready = False
+			if allready:
+				self.startCard()
 		elif self.status == "executing":
 			allready = True
 			for p in self.players:

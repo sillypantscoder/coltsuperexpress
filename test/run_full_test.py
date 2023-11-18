@@ -13,6 +13,7 @@ def print_result(returns: tuple[bool, str]):
 	print(returns[1], getter.RESET, sep="")
 
 def run_test(filename: str):
+	print("Begin test for:", filename)
 	test.reset_file(filename)
 	p = subprocess.Popen(["python3", "main.py"], cwd=os.path.split(os.getcwd())[0], stdout=subprocess.PIPE)
 	if p.stdout != None: p.stdout.readline()

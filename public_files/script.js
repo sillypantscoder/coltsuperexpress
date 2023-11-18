@@ -419,6 +419,7 @@ function getAlivePlayers(train) {
 	}
 	return players
 }
+var isPreviouslyExecuting = false
 /**
  * Update the bottom half of the screen with the game's status.
  * @param {GameStatus} gameStatus The game's current status.
@@ -451,7 +452,7 @@ function updateData(gameStatus) {
 				container.appendChild(document.createElement("h3"))
 				container.children[0].innerText = "Join the game"
 				container.appendChild(document.createElement("div"))
-				container.children[1].innerHTML = `Enter your name: <input type="text" id="playername_box">`
+				container.children[1].innerHTML = `Enter your name: <input type="text" id="playername_box" value="${playername}">`
 				container.appendChild(document.createElement("div"))
 				container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
 			}
@@ -477,9 +478,16 @@ function updateData(gameStatus) {
 			container.children[2].innerHTML = `<div class="card" data-contents="${cardno}"></div>`
 			// things are happening!
 			updateScene(gameStatus)
+		} else if (gameStatus.status == "schemin" && isPreviouslyExecuting) {
+			updateScene(gameStatus)
+			isPreviouslyExecuting = false
 		}
 	} else if (gameStatus.status == "schemin") {
 		// hehehehehe scheming
+		if (isPreviouslyExecuting) {
+			updateScene(gameStatus)
+			isPreviouslyExecuting = false
+		}
 		if (! alive.includes(playername)) {
 			if (container.dataset.screen != "schemin_dead") {
 				container.dataset.screen = "schemin_dead"
@@ -521,6 +529,7 @@ function updateData(gameStatus) {
 	} else if (gameStatus.status == "executing") {
 		// aaaaaaa!
 		updateScene(gameStatus) // things are happening!
+		isPreviouslyExecuting = true
 		if (playerData.ready) {
 			container.appendChild(document.createElement("div"))
 			container.children[0].innerHTML = `<h3>Wait for everyone else to finish!</h3>`

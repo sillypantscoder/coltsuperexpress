@@ -1,0 +1,34 @@
+# Test for this file:
+# When shooting, don't hit people that are on a different level than you.
+# 1. Add the players & start the game
+addplayer alice
+addplayer bob
+addplayer crazyman
+ready alice
+ready bob
+ready crazyman
+assertstate schemin status
+# 2. Make the plans
+submitplan alice wait wait wait
+submitplan bob changeLevel wait wait
+submitplan crazyman shoot wait wait
+# 3. Execute!
+assertstate executing status
+# a. Alice (on the left) does nothing.
+ready alice
+ready bob
+ready crazyman
+# b. Bob (in the middle, facing left) goes up.
+assertstate true train 2 0 height
+ready alice
+ready bob
+ready crazyman
+# c. The crazy man (on the right, facing left) shoots.
+# This shot should go under Bob (who is in the middle, but on the roof) and hit Alice.
+assertstate 0 train 1 .LEN
+assertstate 1 train 0 .LEN
+assertstate true train 0 0 stunned
+# Make sure Alice is in the first car, and stunned.
+assertstate 1 train 2 .LEN
+assertstate false train 2 0 stunned
+# Make sure Bob is in the third car, not stunned.
