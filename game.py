@@ -1,4 +1,5 @@
 import typing
+import random
 
 class Card:
 	def __init__(self, figure: "Figure", srcGame: "Game"):
@@ -17,6 +18,9 @@ class Figure:
 		self.direction: typing.Literal["left", "right"] = "right"
 	def getDisplayHeight(self):
 		return ((not self.height) * 2) + (self.stunned * 1)
+	def setDirection(self, direction: typing.Literal["left", "right"]):
+		self.direction = direction
+		return self
 	def getName(self, players: list["Player"]):
 		if self.player == None:
 			return "#"
@@ -164,6 +168,7 @@ class Game:
 			player.figure = fig
 			if i >= len(self.players) // 2:
 				fig.direction = 'left'
+			fig.height = True
 			self.train.append([fig])
 		self.train.append([]) # engine
 	def findFigure(self, figure: Figure) -> tuple[int, int] | None:
