@@ -130,7 +130,7 @@ const random = {
 
 /**
  * The game's status
- * @typedef {{ status: "joining" | "schemin" | "executing", players: Player[], train: Figure[][], lastcard: string[], playeroffset: number }} GameStatus
+ * @typedef {{ status: "joining" | "schemin" | "executing" | "finished", players: Player[], train: Figure[][], lastcard: string[], playeroffset: number }} GameStatus
  */
 
 /** @type {{name: string, img: string}[]} */
@@ -452,7 +452,8 @@ function updateData(gameStatus) {
 				container.appendChild(document.createElement("h3"))
 				container.children[0].innerText = "Join the game"
 				container.appendChild(document.createElement("div"))
-				container.children[1].innerHTML = `Enter your name: <input type="text" id="playername_box" value="${playername}">`
+				container.children[1].innerHTML = `<span>Enter your name: </span><input type="text" id="playername_box">`
+				if (playername) container.children[1].children[1].value = playername
 				container.appendChild(document.createElement("div"))
 				container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
 			}
@@ -495,7 +496,7 @@ function updateData(gameStatus) {
 				container.children[0].innerHTML = `<h3>You are dead!</h3>`
 				container.appendChild(document.createElement("div"))
 				container.children[1].innerHTML = `<div style="font-size: 0.7em; margin-top: 0.5em;">Dead Dead Dead<br>Dead Dead Dead</div>`
-				post("/ready", playername)
+				if (! playerData.ready) post("/ready", playername)
 			}
 		} else if (playerData.ready) {
 			container.dataset.screen = "schemin_done"
@@ -548,6 +549,24 @@ function updateData(gameStatus) {
 			container.appendChild(document.createElement("div"))
 			container.children[2].innerHTML = `<div class="giantbtn" onclick="ready()">Next</div>`
 		}
+	} else if (gameStatus.status == "finished") {
+		if (isPreviouslyExecuting) {
+			updateScene(gameStatus)
+			isPreviouslyExecuting = false
+		}
+		container.innerText = ""
+		container.appendChild(document.createElement("div"))
+		container.children[0].innerHTML = `The game is finished!`
+		var playersLeft = getAlivePlayers(gameStatus.train)
+		if (playersLeft.length == 0) {
+			container.appendChild(document.createElement("div"))
+			container.children[1].innerHTML = `<h3>NO ONE SURVIVED THE TRAIN TRIP :(</h3>`
+		} else {
+			var winner = playersLeft[0]
+			var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(winner) + 1]
+			container.appendChild(document.createElement("div"))
+			container.children[1].innerHTML = `<h3><div style="width: 1em; height: 1em; border: 0.1em solid black; border-radius: 50%; background: #${color}; display: inline-block;"></div> ${winner} IS THE ULTIMATE WINNER OF EVERYTHING</h3>`
+		}
 	}
 	// Player list
 	[...document.querySelector(".playerlist").children].forEach((e) => e.remove())
@@ -558,7 +577,8 @@ function updateData(gameStatus) {
 		var e = document.createElement("div")
 		document.querySelector(".playerlist").appendChild(e)
 		e.innerHTML = `<div></div><div class="user-color"></div><div class="user-name"><div></div></div>`
-		if (player.ready) e.children[0].classList.add("user-annotation")
+		if (player.ready && gameStatus.status != "finished") e.children[0].classList.add("user-annotation")
+		if (gameStatus.status == "finished" && getAlivePlayers(gameStatus.train).includes(player.name)) e.children[0].classList.add("user-annotation", "user-annotation-win")
 		e.children[1].setAttribute("style", `background: #${COLORS[ri + 1]};`)
 		e.children[2].children[0].innerText = player.name
 		if (player.name == playername) e.children[2].appendChild(document.createElement("div")).innerHTML = `<b>(You)</b>`

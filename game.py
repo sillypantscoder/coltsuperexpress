@@ -108,7 +108,7 @@ def shiftPlayerList(oldList: list[Player], offset: int) -> list[Player]:
 
 class Game:
 	def __init__(self):
-		self.status: typing.Literal["joining", "schemin", "executing"] = "joining"
+		self.status: typing.Literal["joining", "schemin", "executing", "finished"] = "joining"
 		self.players: list[Player] = []
 		self.train: list[list[Figure]] = []
 		self.lastcard: tuple[Card, str] | None = None
@@ -282,6 +282,11 @@ class Game:
 		if allready:
 			self.startCard()
 	def startCard(self):
+		# Check whether only one player is left
+		if self.checkWhetherTheGameShouldEndRightNow():
+			self.finishGame()
+			return
+		# Setup the new game state
 		self.status = "executing"
 		for p in self.players:
 			p.ready = False
@@ -323,6 +328,7 @@ class Game:
 				print("(HAHAHAHAHA)")
 		else:
 			print("NO ONE SURVIVED THE TRAIN TRIP 🪦")
+		self.status = "finished"
 
 if __name__ == "__main__":
 	# some testing
