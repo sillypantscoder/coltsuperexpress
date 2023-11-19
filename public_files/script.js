@@ -14,11 +14,10 @@ function request(url) {
 		var x = new XMLHttpRequest()
 		x.open("GET", url)
 		x.addEventListener("loadend", (e) => {
-			if (e.target.status != 200) location.replace("/")
-			else resolve(e.target.responseText)
+			resolve(e.target.responseText)
 		})
 		x.addEventListener("error", () => {
-			location.replace("/")
+			location.reload()
 		})
 		x.send()
 	})
@@ -120,7 +119,7 @@ const random = {
 
 /**
  * A player
- * @typedef {{ name: string, ready: boolean, planSize: number }} Player
+ * @typedef {{ name: string, ready: boolean, planSize: number, misery: number }} Player
  */
 
 /**
@@ -452,7 +451,7 @@ function updateData(gameStatus) {
 				container.appendChild(document.createElement("h3"))
 				container.children[0].innerText = "Join the game"
 				container.appendChild(document.createElement("div"))
-				container.children[1].innerHTML = `<span>Enter your name: </span><input type="text" id="playername_box">`
+				container.children[1].innerHTML = `<span>Enter your name: </span><input type="text" id="playername_box" onkeydown="if(event.key=='Enter')this.parentNode.nextElementSibling.children[0].click()">`
 				if (playername) container.children[1].children[1].value = playername
 				container.appendChild(document.createElement("div"))
 				container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
@@ -583,6 +582,7 @@ function updateData(gameStatus) {
 		e.children[2].children[0].innerText = player.name
 		if (player.name == playername) e.children[2].appendChild(document.createElement("div")).innerHTML = `<b>(You)</b>`
 		if (gameStatus.status == "executing") e.children[2].appendChild(document.createElement("div")).innerHTML = `Cards left: <b>${player.planSize}</b>`
+		// e.children[2].appendChild(document.createElement("div")).innerHTML = `<i>Misery: ${player.misery}</i>`
 	}
 	// Go through the train to find all the figures
 	/** @type {{figure: Figure, figElm: HTMLDivElement}[]} */
@@ -644,7 +644,8 @@ function join_game() {
 	var newname = document.querySelector("#playername_box").value
 	emptyMainContents()
 	post("/join_game", newname).then((e) => {
-		location.replace("/?name=" + newname)
+		if (query.bot == "true") location.replace("/?name=" + newname + "&bot=true")
+		else location.replace("/?name=" + newname)
 	})
 }
 function ready() {

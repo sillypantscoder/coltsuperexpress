@@ -107,6 +107,9 @@ body {
 .figure.layer-top {
 	margin-bottom: 43%;
 }
+.train-car-locomotive .figure.layer-top {
+	margin-bottom: 28%;
+}
 .figure.stunned {
 	margin-left: 10%;
 	margin-right: 10%;

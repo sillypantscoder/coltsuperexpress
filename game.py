@@ -1,5 +1,4 @@
 import typing
-import random
 
 class Card:
 	def __init__(self, figure: "Figure", srcGame: "Game"):
@@ -34,7 +33,7 @@ class MoveForwardsCard(Card):
 		if self.figure.stunned:
 			self.figure.stunned = False
 		else:
-			self.game.moveFigure(self.figure, self.figure.direction)
+			self.game.moveFigure(self.figure, self.figure.direction, "move")
 	def getName(self):
 		return "forwards"
 
@@ -94,6 +93,7 @@ class Player:
 		self.figure: Figure = Figure(self)
 		self.plan: list[Card] = []
 		self.ready: bool = False
+		self.misery: int = 0
 	def setPlan(self, srcGame: "Game", data: list[str]):
 		self.plan = []
 		for item in data:
@@ -168,7 +168,6 @@ class Game:
 			player.figure = fig
 			if i >= len(self.players) // 2:
 				fig.direction = 'left'
-			fig.height = True
 			self.train.append([fig])
 		self.train.append([]) # engine
 	def findFigure(self, figure: Figure) -> tuple[int, int] | None:
@@ -189,7 +188,8 @@ class Game:
 		hitFigure = self.trace(*figLoc, -1 if figure.direction == 'left' else 1, figure.height)
 		if hitFigure != None:
 			hitFigure.stunned = True
-			self.moveFigure(hitFigure, figure.direction)
+			if hitFigure.player != None: hitFigure.player.misery += 30
+			self.moveFigure(hitFigure, figure.direction, "shot")
 	def trace(self, carNo: int, figNo: int, direction: typing.Literal[-1, 1], height: typing.Literal[True, False, "anywhere"]) -> Figure | None:
 		while True:
 			# Find the next figure in the car, or the next car if needed
@@ -208,13 +208,16 @@ class Game:
 				if target.stunned == False or height == "anywhere": # Train can go to players that are stunned
 					# aaa!
 					return target
-	def moveFigure(self, figure: Figure, direction: typing.Literal["left", "right"]):
+	def moveFigure(self, figure: Figure, direction: typing.Literal["left", "right"], source: typing.Literal["shot", "move"]):
 		new_car: list[Figure] | None = None
 		for carno, car in enumerate(self.train):
 			if figure in car: # Python does advertise how its statements look like real life sentences
 				car.remove(figure)
 				offset = -1 if direction == "left" else 1
 				if carno + offset >= len(self.train) or carno + offset < 0:
+					if figure.player != None:
+						figure.player.misery += 40
+						if carno + offset >= len(self.train): figure.player.misery += len(self.train) * 20
 					# goodbye player!
 					# (the player was removed above, and now will
 					#  not be re-added as we are returning early)
@@ -233,7 +236,8 @@ class Game:
 			"players": [{
 				"name": p.name,
 				"ready": p.ready,
-				"planSize": len(p.plan)
+				"planSize": len(p.plan),
+				"misery": p.misery
 			} for p in self.players],
 			"train": [[{
 				"player": f.player.name if f.player != None else None,
@@ -314,12 +318,19 @@ class Game:
 		if self.checkWhetherTheGameShouldEndRightNow():
 			self.finishGame()
 			return
+		for fig in self.train[0]:
+			if fig.player != None:
+				fig.player.misery += 30
 		self.train.pop(0)
 		if self.checkWhetherTheGameShouldEndRightNow():
 			self.finishGame()
 			return
 		# If there are still players left:
 		self.playerOffset += 1
+		for car in self.train:
+			for fig in car:
+				if fig.player != None:
+					fig.player.misery -= 10
 		self.startRound()
 	def finishGame(self):
 		remaining: list[Figure] = self.getActiveFigures()
@@ -331,6 +342,7 @@ class Game:
 			else:
 				print(f"{possiblePlayer.name} IS THE ULTIMATE WINNER OF EVERYTHING")
 				print("(HAHAHAHAHA)")
+				possiblePlayer.misery -= 30
 		else:
 			print("NO ONE SURVIVED THE TRAIN TRIP 🪦")
 		self.status = "finished"
