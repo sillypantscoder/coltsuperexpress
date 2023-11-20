@@ -546,7 +546,7 @@ function updateData(gameStatus) {
 			container.appendChild(document.createElement("div"))
 			container.children[1].innerHTML = `<div class="card" data-contents="${cardno}"></div>`
 			container.appendChild(document.createElement("div"))
-			container.children[2].innerHTML = `<div class="giantbtn" onclick="ready()">Next</div>`
+			container.children[2].innerHTML = `<div class="giantbtn spacebar-activate" onclick="ready()">Next</div>`
 		}
 	} else if (gameStatus.status == "finished") {
 		if (isPreviouslyExecuting) {
@@ -556,12 +556,11 @@ function updateData(gameStatus) {
 		container.innerText = ""
 		container.appendChild(document.createElement("div"))
 		container.children[0].innerHTML = `The game is finished!`
-		var playersLeft = getAlivePlayers(gameStatus.train)
-		if (playersLeft.length == 0) {
+		if (alive.length == 0) {
 			container.appendChild(document.createElement("div"))
 			container.children[1].innerHTML = `<h3>NO ONE SURVIVED THE TRAIN TRIP :(</h3>`
 		} else {
-			var winner = playersLeft[0]
+			var winner = alive[0]
 			var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(winner) + 1]
 			container.appendChild(document.createElement("div"))
 			container.children[1].innerHTML = `<h3><div style="width: 1em; height: 1em; border: 0.1em solid black; border-radius: 50%; background: #${color}; display: inline-block;"></div> ${winner} IS THE ULTIMATE WINNER OF EVERYTHING</h3>`
@@ -577,12 +576,13 @@ function updateData(gameStatus) {
 		document.querySelector(".playerlist").appendChild(e)
 		e.innerHTML = `<div></div><div class="user-color"></div><div class="user-name"><div></div></div>`
 		if (player.ready && gameStatus.status != "finished") e.children[0].classList.add("user-annotation")
-		if (gameStatus.status == "finished" && getAlivePlayers(gameStatus.train).includes(player.name)) e.children[0].classList.add("user-annotation", "user-annotation-win")
-		e.children[1].setAttribute("style", `background: #${COLORS[ri + 1]};`)
+		if (gameStatus.status == "finished" && alive.includes(player.name)) e.children[0].classList.add("user-annotation", "user-annotation-win")
+		e.children[1].setAttribute("style", `--color: #${COLORS[ri + 1]};`)
+		if (! alive.includes(player.name)) e.children[1].classList.add("dead")
 		e.children[2].children[0].innerText = player.name
 		if (player.name == playername) e.children[2].appendChild(document.createElement("div")).innerHTML = `<b>(You)</b>`
 		if (gameStatus.status == "executing") e.children[2].appendChild(document.createElement("div")).innerHTML = `Cards left: <b>${player.planSize}</b>`
-		// e.children[2].appendChild(document.createElement("div")).innerHTML = `<i>Misery: ${player.misery}</i>`
+		e.children[2].appendChild(document.createElement("div")).innerHTML = `<i>Misery: ${player.misery}</i>`
 	}
 	// Go through the train to find all the figures
 	/** @type {{figure: Figure, figElm: HTMLDivElement}[]} */
@@ -685,3 +685,9 @@ function submitThePlan() {
 	emptyMainContents()
 	post("/submit_plan", `${playername}\n${plan.join("\n")}`)
 }
+window.addEventListener("keydown", (e) => {
+	if (e.key == " ") {
+		var m = document.querySelector(".spacebar-activate")
+		if (m) m.click()
+	}
+})

@@ -1,3 +1,5 @@
+First player cycle doesn't include dead players
+
 Fix spaces in names
 Allow players to leave a game
 
