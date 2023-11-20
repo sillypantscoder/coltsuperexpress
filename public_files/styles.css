@@ -147,31 +147,48 @@ body {
 
 
 
-#game {
+.content_container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
-	overflow: auto;
-	flex-grow: 1;
+	align-items: center;
 }
-#game .maingamecontents {
-	flex-grow: 1;
+.maingamecontents {
+	margin: 1em;
+	padding: 1em;
+	background: white;
+	border: 2px solid black;
+	border-radius: 1em;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 }
-#game .playerlist {
+.maingamecontents:empty {
+	display: none;
+}
+
+.playerlist {
 	flex-grow: 0;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-evenly;
+	background: #4B8F4B;
+	padding-top: 1em;
 }
-#game .playerlist > div {
+.playerlist > div {
 	border: 1px solid black;
 	border-bottom: none;
 	margin: 1em;
 	margin-bottom: 0;
 	position: relative;
+	background: white;
+}
+.playerlist > div.turn {
+	filter: drop-shadow(0px 0px 18px white);
 }
 .playerlist > div, .playerlist .user-color {
 	border-top-left-radius: 1em;

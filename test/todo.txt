@@ -3,7 +3,7 @@ Allow players to leave a game
 Allow people to control the game (e.g. reset a game)
 Player labels on the train would be nice
 Add turn indicator for players on the bottom when going through a round
-Nope - It would be nice to be able to see all of the chosen cards for each player. It allows extra drama when you can see things coming! Ahhhh!
+Allow players to select the order.
 
 Tests to add:
 - Death by shooting off the train

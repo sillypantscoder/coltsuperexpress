@@ -311,7 +311,7 @@ async function getData() {
  * @param {GameStatus} gameStatus The game's current status.
  */
 function updateScene(gameStatus) {
-	[...document.querySelectorAll("#scene > * + * + *")].forEach((e) => e.remove())
+	[...document.querySelectorAll("#scene > * + * + * + *")].forEach((e) => e.remove())
 	// Draw the scene
 	for (var carno = 0; carno < gameStatus.train.length; carno++) {
 		var car = gameStatus.train[carno];
@@ -457,6 +457,7 @@ function updateData(gameStatus) {
 				container.children[1].innerHTML = `<span>Enter your name: </span><input type="text" id="playername_box" onkeydown="if(event.key=='Enter')this.parentNode.nextElementSibling.children[0].click()">`
 				if (playername) container.children[1].children[1].value = playername
 				container.appendChild(document.createElement("div"))
+				container.children[2].setAttribute("style", `padding-top: 1em;`)
 				container.children[2].innerHTML = `<button onclick="join_game()">Join!</button>`
 			}
 		}
@@ -533,9 +534,13 @@ function updateData(gameStatus) {
 		// aaaaaaa!
 		updateScene(gameStatus) // things are happening!
 		isPreviouslyExecuting = true
+		var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(gameStatus.lastcard[1]) + 1]
 		if (playerData.ready) {
+			container.innerText = ""
 			container.appendChild(document.createElement("div"))
-			container.children[0].innerHTML = `<h3>Wait for everyone else to finish!</h3>`
+			container.children[0].innerHTML = `<span><div style="width: 1em; height: 1em; border: 0.1em solid black; border-radius: 50%; background: #${color}; display: inline-block;"></div> ${gameStatus.lastcard[1]}</span>`
+			container.appendChild(document.createElement("div"))
+			container.children[1].innerHTML = `<h3>Wait for everyone else to finish!</h3>`
 		} else {
 			container.innerText = ""
 			if (container.dataset.screen != "executing") {
@@ -543,7 +548,6 @@ function updateData(gameStatus) {
 				if (query.bot == "true") ready()
 			}
 			var cardno = CARDS.map((v) => v.name).indexOf(gameStatus.lastcard[0])
-			var color = COLORS[gameStatus.players.map((v) => v.name).indexOf(gameStatus.lastcard[1]) + 1]
 			container.appendChild(document.createElement("div"))
 			container.children[0].innerHTML = `<b><div style="width: 1em; height: 1em; border: 0.1em solid black; border-radius: 50%; background: #${color}; display: inline-block;"></div> ${gameStatus.lastcard[1]}</b>`
 			container.appendChild(document.createElement("div"))
@@ -577,6 +581,7 @@ function updateData(gameStatus) {
 		var player = gameStatus.players[ri]
 		var e = document.createElement("div")
 		document.querySelector(".playerlist").appendChild(e)
+		if (gameStatus.status == "executing" && gameStatus.lastcard[1] == player.name) e.classList.add("turn")
 		e.innerHTML = `<div></div><div class="user-color"></div><div class="user-name"><div></div></div>`
 		if (player.ready && gameStatus.status != "finished") e.children[0].classList.add("user-annotation")
 		if (gameStatus.status == "finished" && alive.includes(player.name)) e.children[0].classList.add("user-annotation", "user-annotation-win")
@@ -603,7 +608,7 @@ function updateData(gameStatus) {
 		var fig = figures.findIndex((v) => v.figure.player == gameStatus.players[i].name)
 		if (fig == -1) {
 			var e = document.querySelector(`div[data-playername='${gameStatus.players[i].name}']`)
-			e.style.top = "1000px"
+			e.style.top = (document.getElementById("scene").getBoundingClientRect().height + 100) + "px"
 		}
 	}
 }

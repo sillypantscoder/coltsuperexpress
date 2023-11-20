@@ -2,7 +2,7 @@
 	<style>
 .cloud {
 	stroke: black;
-	stroke-width: 1px;
+	stroke-width: 2px;
 	fill: white;
 }
 	</style>
