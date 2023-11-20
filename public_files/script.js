@@ -383,6 +383,9 @@ L 254 240 L 295 231 L 295 173 L 283 134 C 271 123 239 131 225 127 C 224 120 225 
 L 58 238 L 60 210 L 119 214 L 162 192 L 136 300 Z'
 fill='#${COLORS[i + 1]}' /></svg>`
 			e.dataset.playername = players[i].name
+			if (players[i].name == playername) {
+				e.classList.add("player-self")
+			}
 		}
 		// Update the scene (for the new players)
 		getData().then(updateScene)

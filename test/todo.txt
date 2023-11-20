@@ -1,7 +1,9 @@
-First player cycle doesn't include dead players
-
 Fix spaces in names
 Allow players to leave a game
+Allow people to control the game (e.g. reset a game)
+Player labels on the train would be nice
+Add turn indicator for players on the bottom when going through a round
+Nope - It would be nice to be able to see all of the chosen cards for each player. It allows extra drama when you can see things coming! Ahhhh!
 
 Tests to add:
 - Death by shooting off the train
@@ -13,3 +15,7 @@ Tests to add:
   - winner walks off the end of the train (in their plan during the last round)
     - SHOULD NOT HAPPEN
   - last N people are on the last train car and all die
+
+Bugs:
+- When too many people join, the train goes off the screen. Need to autoscale or something.
+- Weird behavior when not using an enormous 30" desktop monitor :-P

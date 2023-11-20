@@ -327,6 +327,8 @@ class Game:
 			return
 		# If there are still players left:
 		self.playerOffset += 1
+		while shiftPlayerList(self.players, self.playerOffset)[0] not in [s.player for s in self.getActiveFigures()]:
+			self.playerOffset += 1
 		for car in self.train:
 			for fig in car:
 				if fig.player != None:
