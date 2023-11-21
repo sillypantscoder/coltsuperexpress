@@ -57,7 +57,8 @@ def get(path: str, query: URLQuery) -> HttpResponse:
 					"html": "text/html",
 					"js": "text/javascript",
 					"css": "text/css",
-					"svg": "image/svg+xml"
+					"svg": "image/svg+xml",
+					"ico": "image/x-icon"
 				}[path.split(".")[-1]]
 			},
 			"content": read_file("public_files" + path)
