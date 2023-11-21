@@ -46,7 +46,13 @@ game: Game = Game()
 def get(path: str, query: URLQuery) -> HttpResponse:
 	# playername = query.get("name")
 	if path == "/script.js":
-		return read_file("public_files/script.js").replace("x.send(body)", 'x.send(body.replaceAll("\\n", "\\\\n"))')
+		return {
+			"status": 200,
+			"headers": {
+				"Content-Type": "text/javascript"
+			},
+			"content": read_file("public_files/script.js").replace("x.send(body)", 'x.send(body.replaceAll("\\n", "\\\\n"))')
+		}
 	elif os.path.isfile("public_files" + path):
 		return {
 			"status": 200,
