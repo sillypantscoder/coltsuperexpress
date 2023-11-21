@@ -1,9 +1,8 @@
 Fix spaces in names
 Allow players to leave a game
-Allow people to control the game (e.g. reset a game)
-Player labels on the train would be nice
-Add turn indicator for players on the bottom when going through a round
 Allow players to select the order.
+
+Allow people to control the game (e.g. reset a game)
 
 Tests to add:
 - Death by shooting off the train
