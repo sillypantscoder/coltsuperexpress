@@ -339,14 +339,8 @@ class Game:
 		if len(remaining) > 0:
 			remainingFig = remaining[0]
 			possiblePlayer: Player | None = remainingFig.player
-			if possiblePlayer == None:
-				print("ONLY SOME RANDOM NPC THAT NO ONE CARES ABOUT SURVIVED THE TRAIN TRIP")
-			else:
-				print(f"{possiblePlayer.name} IS THE ULTIMATE WINNER OF EVERYTHING")
-				print("(HAHAHAHAHA)")
+			if possiblePlayer != None:
 				possiblePlayer.misery -= 30
-		else:
-			print("NO ONE SURVIVED THE TRAIN TRIP 🪦")
 		self.status = "finished"
 
 if __name__ == "__main__":

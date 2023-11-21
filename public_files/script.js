@@ -300,7 +300,7 @@ function updateBackgroundFrame() {
 }
 
 async function getData() {
-	var d = await request("/status")
+	var d = await request("./status")
 	/** @type {GameStatus} */
 	var data = JSON.parse(d)
 	return data;
@@ -499,7 +499,7 @@ function updateData(gameStatus) {
 				container.children[0].innerHTML = `<h3>You are dead!</h3>`
 				container.appendChild(document.createElement("div"))
 				container.children[1].innerHTML = `<div style="font-size: 0.7em; margin-top: 0.5em;">Dead Dead Dead<br>Dead Dead Dead</div>`
-				if (! playerData.ready) post("/ready", playername)
+				if (! playerData.ready) post("./ready", playername)
 			}
 		} else if (playerData.ready) {
 			container.dataset.screen = "schemin_done"
@@ -651,14 +651,14 @@ function emptyMainContents() {
 function join_game() {
 	var newname = document.querySelector("#playername_box").value
 	emptyMainContents()
-	post("/join_game", newname).then((e) => {
-		if (query.bot == "true") location.replace("/?name=" + newname + "&bot=true")
-		else location.replace("/?name=" + newname)
+	post("./join_game", newname).then((e) => {
+		if (query.bot == "true") location.replace("./?name=" + newname + "&bot=true")
+		else location.replace("./?name=" + newname)
 	})
 }
 function ready() {
 	emptyMainContents()
-	post("/ready", playername)
+	post("./ready", playername)
 }
 /**
  * Update the clicky card thing! :D
@@ -691,7 +691,7 @@ function submitThePlan() {
 	if (hasEmptySlots) return
 	var plan = [...document.querySelectorAll("[data-slot^='P']")].map((v) => v.dataset.contents).map((v) => Number(v)).map((v) => CARDS[v].name)
 	emptyMainContents()
-	post("/submit_plan", `${playername}\n${plan.join("\n")}`)
+	post("./submit_plan", `${playername}\n${plan.join("\n")}`)
 }
 window.addEventListener("keydown", (e) => {
 	if (e.key == " ") {
