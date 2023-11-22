@@ -342,6 +342,14 @@ class Game:
 			if possiblePlayer != None:
 				possiblePlayer.misery -= 30
 		self.status = "finished"
+	def removePlayer(self, index: int):
+		player = self.players[index]
+		self.players.remove(player)
+		for car in self.train:
+			for fig in car:
+				if fig.player == player:
+					fig.player = None
+		if self.status == "joining": self.initTrain()
 
 if __name__ == "__main__":
 	# some testing

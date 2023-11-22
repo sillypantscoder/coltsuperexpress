@@ -89,23 +89,13 @@ def get(path: str, query: URLQuery) -> HttpResponse:
 			},
 			"content": json.dumps(game.toDict(), indent='\t')
 		}
-	elif path.startswith("/card/"):
-		data = path.split("/")[2:]
-		card = {
-			"move_forwards": MoveForwardsCard,
-			"turn": TurnCard,
-			"change_level": ChangeLevelCard,
-			"shoot": ShootCard,
-			"revenge": RevengeCard
-		}[data[0]]
-		figure = game.players[int(data[1])].figure
-		card(figure, game).execute()
+	elif path == "/status_mod":
 		return {
 			"status": 200,
 			"headers": {
 				"Content-Type": "text/html"
 			},
-			"content": ""
+			"content": f"""<p>Status: <b>{game.status}</b></p><p>Players:</p><ul>{"".join(["<li><button onclick='sendServerMsg("+'"r'+str(game.players.index(p))+'"'+")'>Remove</button> "+p.name+"</li>" for p in game.players])}</ul>"""
 		}
 	else: # 404 page
 		print("404 GET " + path, file=sys.stderr)
@@ -135,6 +125,14 @@ def post(path: str, body: str) -> HttpResponse:
 		}
 	elif path == "/submit_plan":
 		game.setPlan(bodydata)
+		return {
+			"status": 200,
+			"headers": {},
+			"content": ""
+		}
+	elif path == "/mod":
+		if bodydata[0][0] == "r":
+			game.removePlayer(int(bodydata[0][1:]))
 		return {
 			"status": 200,
 			"headers": {},
