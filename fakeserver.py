@@ -37,6 +37,12 @@ class HttpResponse(typing.TypedDict):
 	headers: dict[str, str]
 	content: str | bytes
 
+class HttpResponseStrict(typing.TypedDict):
+	"""A dict containing an HTTP response. The content field is required to be bytes and not str."""
+	status: int
+	headers: dict[str, str]
+	content: bytes
+
 game: Game = Game()
 
 # game.addPlayer(Player("someone"))
@@ -51,7 +57,7 @@ def get(path: str, query: URLQuery) -> HttpResponse:
 			"headers": {
 				"Content-Type": "text/javascript"
 			},
-			"content": read_file("public_files/script.js").replace("x.send(body)", 'x.send(body.replaceAll("\\n", "\\\\n"))')
+			"content": read_file("public_files/script.js").replace(b"x.send(body)", b'x.send(body.replaceAll("\\n", "\\\\n"))')
 		}
 	elif os.path.isfile("public_files" + path):
 		return {
@@ -147,39 +153,46 @@ def post(path: str, body: str) -> HttpResponse:
 class MyServer:
 	def handle_request(self):
 		r = json.loads(input())
-		res: HttpResponse = {
-				"status": 404,
+		res: HttpResponseStrict = {
+			"status": 404,
 			"headers": {},
-			"content": ""
+			"content": b""
 		}
 		if r["method"] == "GET":
 			res = self.do_GET(r["path"])
 		if r["method"] == "POST":
 			res = self.do_POST(r["path"], r["body"])
-		print(res["status"], end="")
-		print("|||", end="")
-		print(",".join([f"{a}:{b}" for a, b in res["headers"].items()]), end="")
-		print("|||", end="")
-		print(repr(res["content"])[1:-1], end="")
-		print()
-		sys.stdout.flush()
-		# print(f"Sent response", file=sys.stderr)
-	def do_GET(self, path):
+		s: list[bytes] = [
+			str(res["status"]).encode("UTF-8"),
+			",".join([f"{a}:{b}" for a, b in res["headers"].items()]).encode("UTF-8"),
+			res["content"]
+		]
+		for data in s:
+			self.send_packet(data)
+			# time.sleep(0.3)
+	def send_packet(self, info: bytes):
+		sys.stdout.buffer.write(str(len(info)).encode("UTF-8"))
+		sys.stdout.buffer.write(b".")
+		sys.stdout.buffer.write(info)
+		sys.stdout.buffer.flush()
+		# try: print("Printed[", str(len(info)), '.', info.decode("UTF-8"), "]", sep="", file=sys.stderr)
+		# except UnicodeDecodeError: print("Printed[", str(len(info)), '.', info, "]", sep="", file=sys.stderr)
+	def do_GET(self, path) -> HttpResponseStrict:
 		splitpath = path.split("?")
 		res = get(splitpath[0], URLQuery(''.join(splitpath[1:])))
-		c = res["content"]
-		if isinstance(c, bytes): c = c.decode("utf-8")
+		c: str | bytes = res["content"]
+		if isinstance(c, str): c = c.encode("utf-8")
 		return {
-				"status": res["status"],
+			"status": res["status"],
 			"headers": res["headers"],
 			"content": c
 		}
-	def do_POST(self, path: str, body: bytes):
+	def do_POST(self, path: str, body: str) -> HttpResponseStrict:
 		res = post(path, body)
-		c = res["content"]
-		if isinstance(c, bytes): c = c.decode("utf-8")
+		c: str | bytes = res["content"]
+		if isinstance(c, str): c = c.encode("utf-8")
 		return {
-				"status": res["status"],
+			"status": res["status"],
 			"headers": res["headers"],
 			"content": c
 		}
