@@ -129,7 +129,7 @@ const random = {
 
 /**
  * The game's status
- * @typedef {{ status: "joining" | "schemin" | "executing" | "finished", players: Player[], train: Figure[][], lastcard: string[], playeroffset: number }} GameStatus
+ * @typedef {{ status: "joining" | "schemin" | "executing" | "finished" | "error", players: Player[], train: Figure[][], lastcard: string[], playeroffset: number }} GameStatus
  */
 
 /** @type {{name: string, img: string}[]} */
@@ -306,7 +306,9 @@ async function getData() {
 		var data = JSON.parse(d)
 		return data;
 	} catch {
-		location.reload()
+		return {
+			"status": "error"
+		}
 	}
 }
 
@@ -431,10 +433,16 @@ var isPreviouslyExecuting = false
  * @param {GameStatus} gameStatus The game's current status.
  */
 function updateData(gameStatus) {
+	var container = document.querySelector(".maingamecontents")
+	if (gameStatus.status == "error") {
+		container.dataset.screen = "error"
+		container.innerText = ""
+		container.appendChild(document.createElement("div"))
+		container.children[0].innerHTML = `<h3>Lost connection with the server</h3>`
+	}
 	// Add the player elements (if needed)
 	addRealPlayerElements(gameStatus.players)
 	// Update the bottom panel
-	var container = document.querySelector(".maingamecontents")
 	var playerData = gameStatus.players.find((val) => val.name == playername)
 	var alive = getAlivePlayers(gameStatus.train)
 	if (gameStatus.status == "joining") {
