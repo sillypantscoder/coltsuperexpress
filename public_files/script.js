@@ -301,15 +301,9 @@ function updateBackgroundFrame() {
 
 async function getData() {
 	var d = await request("./status")
-	try {
-		/** @type {GameStatus} */
-		var data = JSON.parse(d)
-		return data;
-	} catch {
-		return {
-			"status": "error"
-		}
-	}
+	/** @type {GameStatus} */
+	var data = JSON.parse(d)
+	return data;
 }
 
 /**
@@ -439,6 +433,7 @@ function updateData(gameStatus) {
 		container.innerText = ""
 		container.appendChild(document.createElement("div"))
 		container.children[0].innerHTML = `<h3>Lost connection with the server</h3>`
+		return
 	}
 	// Add the player elements (if needed)
 	addRealPlayerElements(gameStatus.players)
@@ -625,9 +620,15 @@ function updateData(gameStatus) {
 	}
 }
 async function updateDataLoop() {
-	while (true) {
-		updateData(await getData());
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+	try {
+		while (true) {
+			updateData(await getData());
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+		}
+	} catch {
+		updateData({
+			"status": "error"
+		})
 	}
 }
 function addCardCSS() {
