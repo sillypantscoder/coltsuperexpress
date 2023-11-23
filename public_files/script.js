@@ -301,9 +301,13 @@ function updateBackgroundFrame() {
 
 async function getData() {
 	var d = await request("./status")
-	/** @type {GameStatus} */
-	var data = JSON.parse(d)
-	return data;
+	try {
+		/** @type {GameStatus} */
+		var data = JSON.parse(d)
+		return data;
+	} catch {
+		location.reload()
+	}
 }
 
 /**
