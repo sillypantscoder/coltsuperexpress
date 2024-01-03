@@ -149,17 +149,30 @@ def post(path: str, body: str) -> HttpResponse:
 		}
 
 class MyServer:
+	def read_packet(self) -> bytes:
+		headers = b""
+		newChar = b""
+		while newChar != b".":
+			headers += newChar
+			newChar = sys.stdin.buffer.read(1)
+		length = int(headers)
+		content = b""
+		for i in range(length):
+			content += sys.stdin.buffer.read(1)
+		return content
 	def handle_request(self):
-		r = json.loads(input())
+		method = self.read_packet()
+		path = self.read_packet().decode("UTF-8")
+		body = self.read_packet().decode("UTF-8")
 		res: HttpResponseStrict = {
 			"status": 404,
 			"headers": {},
 			"content": b""
 		}
-		if r["method"] == "GET":
-			res = self.do_GET(r["path"])
-		if r["method"] == "POST":
-			res = self.do_POST(r["path"], r["body"])
+		if method == b"GET":
+			res = self.do_GET(path)
+		if method == b"POST":
+			res = self.do_POST(path, body)
 		s: list[bytes] = [
 			str(res["status"]).encode("UTF-8"),
 			",".join([f"{a}:{b}" for a, b in res["headers"].items()]).encode("UTF-8"),
@@ -175,7 +188,7 @@ class MyServer:
 		sys.stdout.buffer.flush()
 		# try: print("Printed[", str(len(info)), '.', info.decode("UTF-8"), "]", sep="", file=sys.stderr)
 		# except UnicodeDecodeError: print("Printed[", str(len(info)), '.', info, "]", sep="", file=sys.stderr)
-	def do_GET(self, path) -> HttpResponseStrict:
+	def do_GET(self, path: str) -> HttpResponseStrict:
 		splitpath = path.split("?")
 		res = get(splitpath[0], URLQuery(''.join(splitpath[1:])))
 		c: str | bytes = res["content"]
