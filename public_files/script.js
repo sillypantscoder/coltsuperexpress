@@ -432,7 +432,7 @@ function updateData(gameStatus) {
 		container.dataset.screen = "error"
 		container.innerText = ""
 		container.appendChild(document.createElement("div"))
-		container.children[0].innerHTML = `<h3>Lost connection with the server</h3>`
+		container.children[0].innerHTML = `<h3>Lost connection with the server</h3>`; container.appendChild(document.createElement("div")); container.children[1].innerHTML = `<button onclick="location.assign(\`/\`)">Exit this game</button>`
 		return
 	}
 	// Add the player elements (if needed)

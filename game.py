@@ -1,4 +1,5 @@
 import typing
+import sys
 
 class Card:
 	def __init__(self, figure: "Figure", srcGame: "Game"):

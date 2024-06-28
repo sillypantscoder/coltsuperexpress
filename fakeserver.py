@@ -164,6 +164,7 @@ class MyServer:
 		method = self.read_packet()
 		path = self.read_packet().decode("UTF-8")
 		body = self.read_packet().decode("UTF-8")
+		body = body.replace("\\n", "\n")
 		res: HttpResponseStrict = {
 			"status": 404,
 			"headers": {},
