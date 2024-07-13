@@ -82,11 +82,28 @@ class RevengeCard(Card):
 			self.figure.stunned = False
 			self.game.shoot(self.figure)
 		else:
-			pass
+			self.figure.stunned = True
 	def getName(self):
 		return "revenge"
 
-card_types: "list[type[Card]]" = [Card, MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard]
+class HorseCard(Card):
+	def __init__(self, figure: Figure, srcGame: "Game"):
+		super().__init__(figure, srcGame)
+	def execute(self):
+		if self.figure.stunned:
+			self.figure.stunned = False
+		else:
+			print(self.game.train, file=sys.stderr)
+			for car in self.game.train:
+				if self.figure in car:
+					car.remove(self.figure)
+			self.game.train[-1].append(self.figure)
+			self.figure.direction = "right"
+			print(self.game.train, file=sys.stderr)
+	def getName(self):
+		return "horse"
+
+card_types: "list[type[Card]]" = [Card, MoveForwardsCard, TurnCard, ChangeLevelCard, ShootCard, RevengeCard, HorseCard]
 
 class Player:
 	def __init__(self, name: str):

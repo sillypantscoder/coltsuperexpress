@@ -149,7 +149,8 @@ Q 7.9 5.5 8 7.5 L 9.8 7.5 Q 9.7 5.5 7.9 4.5 L 7.6 4.4 Z M 6.9 5.2 Q 6.8 5.7 6.4 
 Q 6.6 5.4 6.7 5.2 Z M 3.4 4 Q 3.3 3.5 2.5 3.2 Q 2.8 3.5 2.7 3.6 Q 2.4 3.5 1.7 3.2 Q 2.1 3.5 2.1 3.7 Q 1.7 3.6 1.1 3.5 Q 1.35 3.7 \
 1.6 4 Q 1.2 4 0.15 4.15 Q 1 4.3 1.6 4.3 Q 1.3 4.6 1 4.8 Q 1.65 4.75 2.2 4.7 Q 2.1 4.9 1.8 5.1 Q 2.45 4.9 2.8 4.7 Q 2.8 4.9 2.5 5.2 \
 Q 3.4 4.8 3.4 4.5 Z M 3.0 6.2 L 1.6 6.5 Q 3.1 9.4 6.0 9.5 Q 9.7 9.3 9.8 5.2 Q 9.8 1.3 5.3 1.3 L 5.3 0.4 L 2.4 1.9 L 5.4 3.2 L 5.3 2.3 \
-Q 8.6 2.4 8.6 5.1 Q 8.5 8.0 5.9 8.3 Q 4.2 8.2 3.0 6.2 Z"}
+Q 8.6 2.4 8.6 5.1 Q 8.5 8.0 5.9 8.3 Q 4.2 8.2 3.0 6.2 Z"},
+	{"name": "horse", 		"img": "M 2 2 L 5 5 L 2 8 Z M 6 2 L 9 5 L 6 8 Z"}
 ]
 const COLORS = [
 	"888",
@@ -215,7 +216,7 @@ class TrainSteamDecoration extends Decoration {
 		// this.v[1] += 0.1
 		this.v[0] -= random.randfloat(0.1, 0.3)
 		this.v[1] *= 0.99
-		this.elm.setAttribute("style", `${this.styles} --size: ${this.time.map(0, 120, 0, 150)}px; opacity: ${this.time.map(0, 80, 1, 0)}; --x: ${this.pos[0]}px; --y: ${this.pos[1]}px;`)
+		this.elm.setAttribute("style", `${this.styles} --size: ${this.time.map(0, 120, 0, 150)}px; opacity: ${this.time.map(0, 80, 1, 0)}; --x: ${this.pos[0]}px; --y: ${this.pos[1] + scrollY}px;`)
 		if (this.time > 80) this.destroy()
 	}
 }
@@ -311,12 +312,13 @@ async function getData() {
  * @param {GameStatus} gameStatus The game's current status.
  */
 function updateScene(gameStatus) {
-	[...document.querySelectorAll("#scene > * + * + * + *")].forEach((e) => e.remove())
+	// [...document.querySelectorAll("#scene > * + * + * + *")].forEach((e) => e.remove())
+	[...document.querySelectorAll("#train > *")].forEach((e) => e.remove())
 	// Draw the scene
 	for (var carno = 0; carno < gameStatus.train.length; carno++) {
 		var car = gameStatus.train[carno];
 		var e = document.createElement("div")
-		document.querySelector("#scene").appendChild(e)
+		document.querySelector("#scene").lastChild.appendChild(e)
 		e.classList.add("train-car")
 		e.innerHTML = `<img src="images/train-car-improved.svg"><div class="car-contents"></div>`
 		if (carno == gameStatus.train.length - 1) {
@@ -353,7 +355,7 @@ function updatePlayerPositions(figures) {
 		if (figureData.figElm == null) continue;
 		var box = figureData.figElm.getBoundingClientRect()
 		var e = document.querySelector(`.realfigures .figure[data-playername='${figureData.figure.player}']`)
-		if (e) e.setAttribute("style", `top: ${box.top}px; left: ${box.left}px; width: ${box.width}px; height: ${box.height}px; --flip: ${figureData.figure.direction == 'left' ? 1 : -1};`)
+		if (e) e.setAttribute("style", `top: ${box.top + scrollY}px; left: ${box.left}px; width: ${box.width}px; height: ${box.height}px; --flip: ${figureData.figure.direction == 'left' ? 1 : -1};`)
 		if (figureData.figure.stunned) e.classList.add("real-stunned")
 		else if (e) e.classList.remove("real-stunned")
 	}
